@@ -3,42 +3,15 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 final class UserPolicy
 {
-    public function viewAny(User $user): bool
-    {
-        return false;
-    }
+    use HandlesAuthorization;
 
-    public function view(User $user, User $model): bool
+    public function create(?User $user): Response
     {
-        return false;
-    }
-
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    public function update(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    public function delete(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    public function restore(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    public function forceDelete(User $user, User $model): bool
-    {
-        return false;
+        return $this->allow();
     }
 }
