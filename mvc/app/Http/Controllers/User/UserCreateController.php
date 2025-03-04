@@ -30,7 +30,7 @@ final class UserCreateController extends Controller
             Log::error('failed to create user', ['exception' => $ex]);
 
             return Response::json(
-                new InternalServerErrorResource(),
+                new InternalServerErrorResource,
                 JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }

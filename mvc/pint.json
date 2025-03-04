@@ -1,0 +1,34 @@
+{
+    "preset": "laravel",
+    "cache-file": ".pint.cache",
+    "rules": {
+        "assign_null_coalescing_to_coalesce_equal": true,
+        "concat_space": {
+            "spacing": "one"
+        },
+        "date_time_immutable": true,
+        "declare_parentheses": true,
+        "declare_strict_types": true,
+        "dir_constant": true,
+        "final_class": true,
+        "final_public_method_for_abstract_class": true,
+        "global_namespace_import": {
+            "import_classes": true,
+            "import_constants": true,
+            "import_functions": true
+        },
+        "mb_str_functions": true,
+        "not_operator_with_successor_space": false,
+        "nullable_type_declaration": {
+            "syntax": "question_mark"
+        },
+        "phpdoc_align": {
+            "align": "vertical"
+        },
+        "php_unit_test_case_static_method_calls": {
+            "call_type": "this"
+        },
+        "simplified_if_return": true,
+        "simplified_null_return": true
+    }
+}

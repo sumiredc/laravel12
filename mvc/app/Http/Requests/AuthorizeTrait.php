@@ -31,6 +31,7 @@ trait AuthorizeTrait
     {
         if (!$this->isJson()) {
             parent::failedValidation($validator);
+
             return;
         }
 

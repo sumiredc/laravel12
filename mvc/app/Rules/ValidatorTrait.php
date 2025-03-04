@@ -15,6 +15,7 @@ trait ValidatorTrait
     public function setValidator(Validator $validator): self
     {
         $this->validator = $validator;
+
         return $this;
     }
 
@@ -24,7 +25,7 @@ trait ValidatorTrait
     }
 
     /**
-     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
     protected function setErrorMessages(Closure $fail, MessageBag $messageBag): void
     {

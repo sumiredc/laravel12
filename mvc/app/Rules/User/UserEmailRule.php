@@ -15,13 +15,13 @@ final class UserEmailRule implements ValidationRule, ValidatorAwareRule
     use ValidatorTrait;
 
     /**
-     * @param  Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $validator = Validator::make(
             data: [$attribute => $value],
-            rules: [$attribute =>  ['email:rfc,strict,spoof,filter', 'max:100', 'unique:users,email']],
+            rules: [$attribute => ['email:rfc,strict,spoof,filter', 'max:100', 'unique:users,email']],
             attributes: [$attribute => $this->getCustomAttribute($attribute)]
         );
 

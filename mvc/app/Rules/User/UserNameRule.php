@@ -14,13 +14,13 @@ final class UserNameRule implements ValidationRule
     use ValidatorTrait;
 
     /**
-     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $validator = Validator::make(
             data: [$attribute => $value],
-            rules: [$attribute =>  ['string', 'max:100']],
+            rules: [$attribute => ['string', 'max:100']],
             attributes: [$attribute => $this->getCustomAttribute($attribute)],
         );
 

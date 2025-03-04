@@ -30,6 +30,7 @@ final class UserCreateUseCase
                 );
 
             DB::commit();
+
             return new UserResource($user);
         } catch (Exception $ex) {
             DB::rollBack();

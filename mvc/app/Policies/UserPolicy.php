@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\User;
@@ -11,6 +13,11 @@ final class UserPolicy
     use HandlesAuthorization;
 
     public function create(?User $user): Response
+    {
+        return $this->allow();
+    }
+
+    public function get(?User $auth, User $user): Response
     {
         return $this->allow();
     }

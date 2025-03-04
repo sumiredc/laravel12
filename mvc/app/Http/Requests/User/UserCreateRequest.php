@@ -30,13 +30,6 @@ final class UserCreateRequest extends FormRequest
         ];
     }
 
-    public function attributes()
-    {
-        return [
-            'email' => 'メールアドレス',
-        ];
-    }
-
     public function name(): string
     {
         return $this->validated('name', '');
