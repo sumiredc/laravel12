@@ -7,9 +7,9 @@ namespace App\UseCases\User;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Repositories\UserRepository;
-use Exception;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 final class UserCreateUseCase
 {
@@ -32,7 +32,7 @@ final class UserCreateUseCase
             DB::commit();
 
             return new UserResource($user);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             DB::rollBack();
             throw $ex;
         }

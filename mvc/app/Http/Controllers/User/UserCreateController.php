@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\User;
 
+use App\Exceptions\InternalServerErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
-use App\Http\Resources\Error\InternalServerErrorResource;
 use App\UseCases\User\UserCreateUseCase;
-use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Response;
+use Throwable;
 
 final class UserCreateController extends Controller
 {
@@ -23,16 +22,13 @@ final class UserCreateController extends Controller
         try {
             $resource = $useCase($request);
 
-            return Response::json($resource, JsonResponse::HTTP_CREATED);
+            return new JsonResponse($resource, JsonResponse::HTTP_CREATED);
         } catch (HttpResponseException $resEx) {
             throw $resEx;
-        } catch (Exception $ex) {
-            Log::error('failed to create user', ['exception' => $ex]);
+        } catch (Throwable $e) {
+            Log::error('failed to create user', ['error' => $e]);
 
-            return Response::json(
-                new InternalServerErrorResource,
-                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
-            );
+            throw new InternalServerErrorException;
         }
     }
 }

@@ -15,13 +15,6 @@ final class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * @var array<string>
-     */
-    protected $casts = [
-        'id' => 'int',
-    ];
-
-    /**
      * @var list<string>
      */
     protected $fillable = [
@@ -31,13 +24,14 @@ final class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var list<string>
      */
     protected $hidden = [
+        'email_verified_at',
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -48,8 +42,14 @@ final class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'id' => 'int',
+            'name' => 'string',
+            'email' => 'string',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'remember_token' => 'string',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 }

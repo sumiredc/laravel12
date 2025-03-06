@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 
 final class UserRepository
 {
-    public function list(string $name, string $email): Collection
+    public function list(int $offset, int $limit, string $name, string $email): Collection
     {
         $query = User::query();
 
@@ -21,7 +21,7 @@ final class UserRepository
             $query->whereEmail($email);
         }
 
-        return $query->get();
+        return $query->offset($offset)->limit($limit)->get();
     }
 
     public function create(string $name, string $email): User

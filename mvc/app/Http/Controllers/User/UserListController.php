@@ -6,28 +6,25 @@ namespace App\Http\Controllers\User;
 
 use App\Exceptions\InternalServerErrorException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserGetRequest;
-use App\Models\User;
-use App\UseCases\User\UserGetUseCase;
+use App\Http\Requests\User\UserListRequest;
+use App\UseCases\User\UserListUseCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-final class UserGetController extends Controller
+final class UserListController extends Controller
 {
-    public function __invoke(UserGetRequest $request, User $user): JsonResponse
+    public function __invoke(UserListRequest $request): JsonResponse
     {
-        $useCase = app(UserGetUseCase::class);
-
         try {
-            $resource = $useCase($request, $user);
+            $useCase = app(UserListUseCase::class);
+            $resource = $useCase($request);
 
             return new JsonResponse($resource, JsonResponse::HTTP_OK);
         } catch (Throwable $e) {
-            Log::error('failed to get a user', ['error' => $e]);
+            Log::error('failed to get users', ['error' => $e]);
 
             throw new InternalServerErrorException;
         }
-
     }
 }

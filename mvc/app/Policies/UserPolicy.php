@@ -12,6 +12,11 @@ final class UserPolicy
 {
     use HandlesAuthorization;
 
+    public function list(?User $user): Response
+    {
+        return $this->allow();
+    }
+
     public function create(?User $user): Response
     {
         return $this->allow();
