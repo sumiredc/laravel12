@@ -4,48 +4,90 @@ declare(strict_types=1);
 
 namespace App\Http;
 
-use App\Exceptions\UnprocessableContentException;
+use App\Exceptions\NotFoundException;
+use App\Exceptions\UnauthorizedException;
 use App\Http\Resources\Error\ErrorResource;
 use App\Http\Resources\Error\UnprocessableContentResource;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 final class ErrorHandler
 {
+    public function report(Exceptions $exceptions): void
+    {
+        $exceptions->dontReport([
+            OAuthServerException::class,
+        ]);
+    }
+
     /**
      * @throws HttpResponseException
      */
     public function json(Exceptions $exceptions): void
     {
-        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $th) {
+        $exceptions->shouldRenderJsonWhen(static function (Request $request, Throwable $th): bool {
             if ($request->isJson()) {
                 return true;
             }
 
             return $request->expectsJson();
-        });
+        })
+            ->render(function (Throwable $th, Request $request): ?JsonResponse {
+                if (!$request->isJson()) {
+                    return null;
+                }
 
-        $exceptions->render(function (Throwable $ex, Request $request): ?JsonResponse {
-            if (!$request->isJson()) {
-                return null;
-            }
+                $th = $this->mappingForAuthorization($th);
+                $th = $this->mappingForNotFound($th, $request);
+                $resource = $this->exceptionToJsonResource($th, $request);
+                $statusCode = $this->statusCodeByException($th);
 
-            $resource = match ($ex::class) {
-                UnprocessableContentException::class => (static function () use ($ex): UnprocessableContentResource {
-                    /** @var UnprocessableContentException $ex */
-                    return new UnprocessableContentResource($ex->getMessage(), $ex->errors);
-                })(),
-                default => new ErrorResource($ex->getMessage()),
-            };
+                return new JsonResponse($resource, $statusCode);
+            });
+    }
 
-            $statusCode = $this->statusCodeByException($ex);
+    private function mappingForAuthorization(Throwable $th)
+    {
+        if ($th instanceof AuthenticationException) {
+            return new UnauthorizedException;
+        }
 
-            return new JsonResponse($resource, $statusCode);
-        });
+        return $th;
+    }
+
+    /**
+     * NOTE: Overwrite for default message.
+     */
+    private function mappingForNotFound(Throwable $th, Request $request): Throwable
+    {
+        if (
+            $th instanceof NotFoundHttpException
+            || $th instanceof ModelNotFoundException
+        ) {
+            Log::warning($th->getMessage(), ['path' => $request->uri()->value()]);
+            $th = new NotFoundException(previous: $th);
+        }
+
+        return $th;
+    }
+
+    private function exceptionToJsonResource(Throwable $th): JsonResource
+    {
+        if ($th instanceof ValidationException) {
+            return new UnprocessableContentResource($th->getMessage(), $th->errors());
+        }
+
+        return new ErrorResource($th->getMessage());
     }
 
     private function statusCodeByException(mixed $ex): int
@@ -64,7 +106,20 @@ final class ErrorHandler
             }
         }
 
-        Log::info('failed get to status code by Exception', [
+        $properties = ['status'];
+
+        foreach ($properties as $property) {
+            if (!property_exists($ex, $property)) {
+                continue;
+            }
+
+            $statusCode = intval($ex->$property);
+            if ($statusCode != 0) {
+                return $statusCode;
+            }
+        }
+
+        Log::warning('failed get to status code by Exception', [
             'exception' => $ex::class,
         ]);
 

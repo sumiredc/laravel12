@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Exceptions\ForbiddenException;
-use App\Exceptions\UnprocessableContentException;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Gate;
 
 trait AuthorizeTrait
@@ -24,18 +21,5 @@ trait AuthorizeTrait
         }
 
         return true;
-    }
-
-    /**
-     * @throws HttpResponseException,\Illuminate\Validation\ValidationException
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        if ($this->isJson()) {
-            throw new UnprocessableContentException($validator->errors()->toArray());
-        }
-
-        parent::failedValidation($validator);
-
     }
 }

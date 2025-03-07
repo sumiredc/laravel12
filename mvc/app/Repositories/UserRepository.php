@@ -33,9 +33,16 @@ final class UserRepository
         ]);
     }
 
-    public function get(int $userID): User
+    public function get(int $userID): ?User
     {
         return User::find($userID);
+    }
+
+    public function getByEmail(string $email): ?User
+    {
+        return User::whereEmail($email)
+            ->whereNotNull('email_verified_at')
+            ->first();
     }
 
     public function update(User $user, string $name, string $email): User

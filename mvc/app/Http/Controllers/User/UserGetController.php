@@ -18,6 +18,5 @@ final class UserGetController extends Controller
         $resource = $useCase($request, $user);
 
         return new JsonResponse($resource, JsonResponse::HTTP_OK);
-
     }
 }

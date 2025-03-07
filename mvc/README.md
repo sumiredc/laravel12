@@ -13,3 +13,17 @@ php artisan ide-helper:generate
 php artisan ide-helper:meta
 php artisan ide-helper:models -N -R
 ```
+
+## Setup
+
+```sh
+php artisan migrate --seed
+php artisan passport:client --personal
+
+  Client ID ............................... xxxxxxxxxx  
+  Client secret ........................... xxxxxxxxxx
+
+  ✅️ Overwrite to .env
+  - PASSPORT_PERSONAL_ACCESS_CLIENT_ID
+  - PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET
+```

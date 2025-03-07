@@ -12,27 +12,27 @@ final class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function list(?User $user): Response
+    public function list(User $authUser): Response
     {
         return $this->allow();
     }
 
-    public function create(?User $user): Response
+    public function create(User $authUser): Response
     {
         return $this->allow();
     }
 
-    public function get(?User $auth, User $user): Response
+    public function get(User $authUser, User $user): Response
     {
         return $this->allow();
     }
 
-    public function update(?User $auth, user $user): Response
+    public function update(User $authUser, user $user): Response
     {
         return $this->allow();
     }
 
-    public function delete(?User $auth, user $user): Response
+    public function delete(User $authUser, user $user): Response
     {
         return $this->allow();
     }
