@@ -14,7 +14,7 @@ final class UserListUseCase
         private UserRepository $userRepository
     ) {}
 
-    public function __invoke(UserListRequest $request)
+    public function __invoke(UserListRequest $request): UserListResource
     {
         $users = $this->userRepository->list(
             $request->offset(),

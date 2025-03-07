@@ -26,4 +26,14 @@ final class UserPolicy
     {
         return $this->allow();
     }
+
+    public function update(?User $auth, user $user): Response
+    {
+        return $this->allow();
+    }
+
+    public function delete(?User $auth, user $user): Response
+    {
+        return $this->allow();
+    }
 }

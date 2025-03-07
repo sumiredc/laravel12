@@ -38,13 +38,15 @@ final class UserRepository
         return User::find($userID);
     }
 
-    public function update(User $user, string $name, string $email): void
+    public function update(User $user, string $name, string $email): User
     {
         $user->fill([
             'name' => $name,
             'email' => $email,
         ])
             ->save();
+
+        return $user;
     }
 
     public function delete(User $user): void

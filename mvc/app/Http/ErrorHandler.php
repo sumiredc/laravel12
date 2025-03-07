@@ -11,6 +11,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 final class ErrorHandler
@@ -41,7 +42,32 @@ final class ErrorHandler
                 default => new ErrorResource($ex->getMessage()),
             };
 
-            return new JsonResponse($resource, $ex->getCode());
+            $statusCode = $this->statusCodeByException($ex);
+
+            return new JsonResponse($resource, $statusCode);
         });
+    }
+
+    private function statusCodeByException(mixed $ex): int
+    {
+        $methods = ['getCode', 'getStatus', 'getStatusCode'];
+
+        foreach ($methods as $method) {
+            if (!method_exists($ex, $method)) {
+                continue;
+            }
+
+            $statusCode = intval($ex->$method());
+
+            if ($statusCode != 0) {
+                return $statusCode;
+            }
+        }
+
+        Log::info('failed get to status code by Exception', [
+            'exception' => $ex::class,
+        ]);
+
+        return JsonResponse::HTTP_INTERNAL_SERVER_ERROR;
     }
 }

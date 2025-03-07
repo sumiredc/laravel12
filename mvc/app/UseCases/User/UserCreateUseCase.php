@@ -7,9 +7,7 @@ namespace App\UseCases\User;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Repositories\UserRepository;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
-use Throwable;
 
 final class UserCreateUseCase
 {
@@ -19,22 +17,15 @@ final class UserCreateUseCase
 
     public function __invoke(
         UserCreateRequest $request
-    ): JsonResource {
-        DB::beginTransaction();
-
-        try {
+    ): UserResource {
+        return DB::transaction(function () use ($request) {
             $user = $this->userRepository
                 ->create(
                     $request->name(),
                     $request->email(),
                 );
 
-            DB::commit();
-
             return new UserResource($user);
-        } catch (Throwable $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+        });
     }
 }

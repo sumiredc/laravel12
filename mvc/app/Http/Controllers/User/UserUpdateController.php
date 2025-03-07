@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserGetRequest;
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
-use App\UseCases\User\UserGetUseCase;
+use App\UseCases\User\UserUpdateUseCase;
 use Illuminate\Http\JsonResponse;
 
-final class UserGetController extends Controller
+final class UserUpdateController extends Controller
 {
-    public function __invoke(UserGetRequest $request, User $user): JsonResponse
+    public function __invoke(UserUpdateRequest $request, User $user): JsonResponse
     {
-        $useCase = app(UserGetUseCase::class);
+        $useCase = app(UserUpdateUseCase::class);
         $resource = $useCase($request, $user);
 
         return new JsonResponse($resource, JsonResponse::HTTP_OK);
-
     }
 }
