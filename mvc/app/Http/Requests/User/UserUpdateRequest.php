@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
 use App\Rules\User\UserEmailRule;
 use App\Rules\User\UserNameRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-final class UserUpdateRequest extends FormRequest
+final class UserUpdateRequest extends AbstractRequest
 {
     use AuthorizeTrait;
 

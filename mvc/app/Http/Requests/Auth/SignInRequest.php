@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
 use App\Rules\Auth\CredentialStringRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-final class SignInRequest extends FormRequest
+final class SignInRequest extends AbstractRequest
 {
     use AuthorizeTrait;
 

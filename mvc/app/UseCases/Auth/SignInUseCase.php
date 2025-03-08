@@ -30,8 +30,6 @@ final class SignInUseCase
         }
 
         return DB::transaction(function () use ($user) {
-            $this->tokenRepository->deleteUserAuthorizationToken($user);
-
             $token = $this->tokenRepository->createUserAuthorizationToken($user);
 
             return new SignInUserResource($user, $token);

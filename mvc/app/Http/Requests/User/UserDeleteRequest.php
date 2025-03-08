@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
-use Illuminate\Foundation\Http\FormRequest;
 
-final class UserDeleteRequest extends FormRequest
+final class UserDeleteRequest extends AbstractRequest
 {
     use AuthorizeTrait;
 

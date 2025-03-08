@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
 use App\Models\User;
 use App\Rules\Common\PositiveNaturalNumberRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-final class UserListRequest extends FormRequest
+final class UserListRequest extends AbstractRequest
 {
     use AuthorizeTrait;
 

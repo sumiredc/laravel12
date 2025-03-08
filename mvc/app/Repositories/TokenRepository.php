@@ -17,6 +17,11 @@ final class TokenRepository
             ->accessToken;
     }
 
+    public function revokeUserAuthorizationToken(User $user): void
+    {
+        $user->token()->revoke();
+    }
+
     public function deleteUserAuthorizationToken(User $user): void
     {
         $user->tokens()->delete();

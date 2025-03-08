@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\AbstractRequest;
 use App\Rules\Auth\CredentialStringRule;
 use App\Rules\Auth\PasswordRule;
-use Illuminate\Foundation\Http\FormRequest;
 
-final class FirstSignInRequest extends FormRequest
+final class FirstSignInRequest extends AbstractRequest
 {
     /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>

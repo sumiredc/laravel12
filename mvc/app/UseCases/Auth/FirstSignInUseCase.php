@@ -38,7 +38,6 @@ final class FirstSignInUseCase
                 hashedPassword: $password->hashed
             );
 
-            $this->tokenRepository->deleteUserAuthorizationToken($user);
             $token = $this->tokenRepository->createUserAuthorizationToken($user);
 
             return new SignInUserResource($user, $token);
