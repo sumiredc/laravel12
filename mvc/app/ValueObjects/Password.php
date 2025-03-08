@@ -23,7 +23,13 @@ final class Password
     public static function make(): self
     {
         $chars = self::UPPER . self::LOWER . self::SYMBOLS . self::NUMBERS;
-        $plain = mb_substr(str_shuffle(str_repeat($chars, self::LENGTH)), 0, self::LENGTH);
+        $upper = str_shuffle(self::UPPER)[0];
+        $lower = str_shuffle(self::LOWER)[0];
+        $symbol = str_shuffle(self::SYMBOLS)[0];
+        $number = str_shuffle(self::NUMBERS)[0];
+
+        $base = mb_substr(str_shuffle(str_repeat($chars, self::LENGTH)), 0, self::LENGTH - 4);
+        $plain = str_shuffle($base . $upper . $lower . $symbol . $number);
 
         return new self($plain);
     }
