@@ -18,7 +18,7 @@ To make sure this is always available, you may add this to your shell configurat
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 ```
 
-#### Build to dev
+### Build to dev
 
 ```sh
 sail up
@@ -34,15 +34,23 @@ sail artisan passport:client --personal
   - PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET
 ```
 
-
-## Laravel Pint
-```sh
-sail pint -v
-```
-
-## ide-helper
+### ide-helper
 ```sh
 sail artisan ide-helper:generate
 sail artisan ide-helper:meta
 sail artisan ide-helper:models -N -R
+```
+
+## Formatter
+
+### Laravel Pint
+```sh
+sail pint -v
+```
+
+## Database
+
+### MySQL
+```sh
+sail mysql
 ```

@@ -6,17 +6,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\InvalidCredentialException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\SignInRequest;
-use App\UseCases\Auth\SignInUseCase;
+use App\Http\Requests\Auth\FirstSignInRequest;
+use App\UseCases\Auth\FirstSignInUseCase;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
-final class SignInController extends Controller
+final class FirstSignInController extends Controller
 {
-    public function __invoke(SignInRequest $request): JsonResponse
+    public function __invoke(FirstSignInRequest $request): JsonResponse
     {
         try {
-            $useCase = app(SignInUseCase::class);
+            $useCase = app(FirstSignInUseCase::class);
             $resource = $useCase($request);
 
             return new JsonResponse($resource, JsonResponse::HTTP_OK);

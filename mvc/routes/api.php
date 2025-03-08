@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\FirstSignInController;
 use App\Http\Controllers\Auth\SignInController;
 use App\Http\Controllers\User\UserCreateController;
 use App\Http\Controllers\User\UserDeleteController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\User\UserUpdateController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('sign-in')->post('/sign-in', SignInController::class);
+Route::name('first-sign-in')->post('/first-sign-in', FirstSignInController::class);
 
 Route::name('user.')->prefix('/user')->middleware(['auth:api'])->group(static function () {
     Route::name('list')->get('', UserListController::class);

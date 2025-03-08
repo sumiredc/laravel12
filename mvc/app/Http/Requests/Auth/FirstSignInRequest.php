@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
-use App\Http\Requests\AuthorizeTrait;
 use App\Rules\Auth\CredentialStringRule;
+use App\Rules\Auth\PasswordRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-final class SignInRequest extends FormRequest
+final class FirstSignInRequest extends FormRequest
 {
-    use AuthorizeTrait;
-
     /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -20,6 +18,7 @@ final class SignInRequest extends FormRequest
         return [
             'login_id' => ['required', app(CredentialStringRule::class)],
             'password' => ['required', app(CredentialStringRule::class)],
+            'new_password' => ['required', app(PasswordRule::class)],
         ];
     }
 
@@ -31,5 +30,10 @@ final class SignInRequest extends FormRequest
     public function password(): string
     {
         return $this->validated('password', '');
+    }
+
+    public function newPassword(): string
+    {
+        return $this->validated('new_password', '');
     }
 }

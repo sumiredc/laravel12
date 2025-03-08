@@ -24,12 +24,12 @@ final class UserRepository
         return $query->offset($offset)->limit($limit)->get();
     }
 
-    public function create(string $name, string $email): User
+    public function create(string $name, string $email, string $hashedPassword): User
     {
         return User::create([
             'name' => $name,
             'email' => $email,
-            'password' => '',
+            'password' => $hashedPassword,
         ]);
     }
 
@@ -45,11 +45,23 @@ final class UserRepository
             ->first();
     }
 
-    public function update(User $user, string $name, string $email): User
+    public function getUnverifiedByEmail(string $email): ?User
     {
+        return User::whereEmail($email)
+            ->whereNull('email_verified_at')
+            ->first();
+    }
+
+    public function update(
+        User $user,
+        string $name = '',
+        string $email = '',
+        string $hashedPassword = ''
+    ): User {
         $user->fill([
-            'name' => $name,
-            'email' => $email,
+            'name' => $name ?: $user->name,
+            'email' => $email ?: $user->email,
+            'password' => $hashedPassword ?: $hashedPassword,
         ])
             ->save();
 
