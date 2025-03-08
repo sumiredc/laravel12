@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Exceptions\NotFoundException;
+use App\Exceptions\ShouldntReportException;
 use App\Exceptions\UnauthorizedException;
 use App\Http\Resources\Error\ErrorResource;
 use App\Http\Resources\Error\UnprocessableContentResource;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
@@ -23,6 +25,15 @@ use Throwable;
 
 final class ErrorHandler
 {
+    /**
+     * An Exception class that does not disclose error messages.
+     *
+     * @var array<string,int>
+     */
+    private array $privateExceptions = [
+        QueryException::class => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+    ];
+
     public function report(Exceptions $exceptions): void
     {
         $exceptions->dontReport([
@@ -33,7 +44,7 @@ final class ErrorHandler
     /**
      * @throws HttpResponseException
      */
-    public function json(Exceptions $exceptions): void
+    public function jsonResponse(Exceptions $exceptions): void
     {
         $exceptions->shouldRenderJsonWhen(static function (Request $request, Throwable $th): bool {
             if ($request->isJson()) {
@@ -47,6 +58,7 @@ final class ErrorHandler
                     return null;
                 }
 
+                $th = $this->hiddenPrivateException($th);
                 $th = $this->mappingForAuthorization($th);
                 $th = $this->mappingForNotFound($th, $request);
                 $resource = $this->exceptionToJsonResource($th, $request);
@@ -56,6 +68,9 @@ final class ErrorHandler
             });
     }
 
+    /**
+     * NOTE: Overwrite for default message.
+     */
     private function mappingForAuthorization(Throwable $th)
     {
         if ($th instanceof AuthenticationException) {
@@ -81,6 +96,21 @@ final class ErrorHandler
         return $th;
     }
 
+    /**
+     * NOTE: Replace it with ShouldntReport to prevent error logs from being output twice.
+     */
+    private function hiddenPrivateException(Throwable $th): Throwable
+    {
+        $statusCode = $this->privateExceptions[$th::class] ?? 0;
+        if ($statusCode === 0) {
+            return $th;
+        }
+
+        $statusText = JsonResponse::$statusTexts[$statusCode] ?? JsonResponse::$statusTexts[JsonResponse::HTTP_INTERNAL_SERVER_ERROR];
+
+        return new ShouldntReportException($statusText, $statusCode, $th);
+    }
+
     private function exceptionToJsonResource(Throwable $th): JsonResource
     {
         if ($th instanceof ValidationException) {
@@ -92,6 +122,8 @@ final class ErrorHandler
 
     private function statusCodeByException(mixed $ex): int
     {
+        $checkStatusCode = fn (int $code) => $code >= 100 && $code < 600;
+
         $methods = ['getCode', 'getStatus', 'getStatusCode'];
 
         foreach ($methods as $method) {
@@ -100,8 +132,7 @@ final class ErrorHandler
             }
 
             $statusCode = intval($ex->$method());
-
-            if ($statusCode != 0) {
+            if ($checkStatusCode($statusCode)) {
                 return $statusCode;
             }
         }
@@ -114,7 +145,7 @@ final class ErrorHandler
             }
 
             $statusCode = intval($ex->$property);
-            if ($statusCode != 0) {
+            if ($checkStatusCode($statusCode)) {
                 return $statusCode;
             }
         }

@@ -18,5 +18,5 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         $handler = app(ErrorHandler::class);
         $handler->report($exceptions);
-        $handler->json($exceptions);
+        $handler->jsonResponse($exceptions);
     })->create();
