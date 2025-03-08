@@ -5,18 +5,38 @@ declare(strict_types=1);
 use App\ValueObjects\Password;
 use Illuminate\Support\Facades\Hash;
 
-test('Password::make() generates a sequre password with required character types', function () {
-    $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $lower = 'abcdefghijklmnopqrstuvwxyz';
-    $symbol = '!@#$%^&*()_+{}[]';
-    $numbers = '0123456789';
+describe('Password::make()', function () {
+    it('including to character of upper case', function () {
+        $result = Password::make();
+        $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        expect(strpbrk($result->plain, $upper) !== false)->toBeTrue();
+    });
 
-    $password = Password::make();
+    it('including to character of lower case', function () {
+        $result = Password::make();
+        $lower = 'abcdefghijklmnopqrstuvwxyz';
+        expect(strpbrk($result->plain, $lower) !== false)->toBeTrue();
+    });
 
-    expect(strpbrk($password->plain, $upper) !== false)->toBeTrue();
-    expect(strpbrk($password->plain, $lower) !== false)->toBeTrue();
-    expect(strpbrk($password->plain, $symbol) !== false)->toBeTrue();
-    expect(strpbrk($password->plain, $numbers) !== false)->toBeTrue();
-    expect(16)->toBe(mb_strlen($password->plain));
-    expect(Hash::check($password->plain, $password->hashed));
+    it('including to character of symbol', function () {
+        $result = Password::make();
+        $symbol = '!@#$%^&*()_+{}[]';
+        expect(strpbrk($result->plain, $symbol) !== false)->toBeTrue();
+    });
+
+    it('including to character of number', function () {
+        $result = Password::make();
+        $numbers = '0123456789';
+        expect(strpbrk($result->plain, $numbers) !== false)->toBeTrue();
+    });
+
+    it('match to length', function () {
+        $result = Password::make();
+        expect(mb_strlen($result->plain))->toBe(16);
+    });
+
+    it('match hash and plain', function () {
+        $result = Password::make();
+        expect(Hash::check($result->plain, $result->hashed))->toBeTrue();
+    });
 });

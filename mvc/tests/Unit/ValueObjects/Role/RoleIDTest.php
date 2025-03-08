@@ -5,22 +5,24 @@ declare(strict_types=1);
 use App\Consts\Role;
 use App\ValueObjects\Role\RoleID;
 
-test('RoleID:parse() correctly initializes from a given ULID', function (Role $role) {
-    $RoleID = RoleID::parse($role);
+describe('RoleID', function () {
+    it('parse() correctly initializes from a given ULID', function (Role $role) {
+        $result = RoleID::parse($role);
 
-    expect($role->value)->toBe($RoleID->value);
-})
-    ->with([
-        'Admin role' => Role::Admin,
-        'User role' => Role::User,
-    ]);
+        expect($result->value)->toBe($role->value);
+    })
+        ->with([
+            'Admin role' => Role::Admin,
+            'User role' => Role::User,
+        ]);
 
-test('RoleID::__toString() correctly initializes from a given ULID', function (Role $role) {
-    $RoleID = RoleID::parse($role);
+    it('__toString() correctly initializes from a given ULID', function (Role $role) {
+        $result = RoleID::parse($role);
 
-    expect($role->value)->toBe((string) $RoleID);
-})
-    ->with([
-        'Admin role' => Role::Admin,
-        'User role' => Role::User,
-    ]);
+        expect((string) $result)->toBe($role->value);
+    })
+        ->with([
+            'Admin role' => Role::Admin,
+            'User role' => Role::User,
+        ]);
+});
