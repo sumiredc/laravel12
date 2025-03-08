@@ -16,10 +16,10 @@ Route::name('first-sign-in')->post('/first-sign-in', FirstSignInController::clas
 Route::name('sign-in')->post('/sign-in', SignInController::class);
 Route::name('sign-out')->delete('sign-out', SignOutController::class)->middleware(['auth:api']);
 
-Route::name('user.')->prefix('/user')->middleware(['auth:api'])->group(static function () {
+Route::name('user.')->prefix('/user')->middleware(['auth:api', 'verified'])->group(static function () {
     Route::name('list')->get('', UserListController::class);
     Route::name('create')->post('', UserCreateController::class);
-    Route::name('get')->get('/{user}', UserGetController::class)->where('user', '[0-9]+');
-    Route::name('update')->put('/{user}', UserUpdateController::class)->where('user', '[0-9]+');
-    Route::name('delete')->delete('/{user}', UserDeleteController::class)->where('user', '[0-9]+');
+    Route::name('get')->get('/{user}', UserGetController::class)->whereUlid('user');
+    Route::name('update')->put('/{user}', UserUpdateController::class)->whereUlid('user');
+    Route::name('delete')->delete('/{user}', UserDeleteController::class)->whereUlid('user');
 });

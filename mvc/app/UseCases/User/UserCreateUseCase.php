@@ -9,6 +9,7 @@ use App\Http\Resources\User\UserResource;
 use App\Mail\InitialPasswordMail;
 use App\Repositories\UserRepository;
 use App\ValueObjects\Password;
+use App\ValueObjects\User\UserID;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -23,8 +24,10 @@ final class UserCreateUseCase
     ): UserResource {
         return DB::transaction(function () use ($request) {
             $password = Password::make();
+            $userID = UserID::make();
             $user = $this->userRepository
                 ->create(
+                    $userID,
                     $request->name(),
                     $request->email(),
                     $password->hashed

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Consts\Role;
 use App\Models\User;
+use App\ValueObjects\Role\RoleID;
+use App\ValueObjects\User\UserID;
 use Illuminate\Support\Collection;
 
 final class UserRepository
@@ -14,19 +17,21 @@ final class UserRepository
         $query = User::query();
 
         if ($name) {
-            $query->whereName($name);
+            $query->whereLike('name', "%$name%");
         }
 
         if ($email) {
-            $query->whereEmail($email);
+            $query->whereLike('email', "%$email%");
         }
 
         return $query->offset($offset)->limit($limit)->get();
     }
 
-    public function create(string $name, string $email, string $hashedPassword): User
+    public function create(UserID $userID, string $name, string $email, string $hashedPassword): User
     {
         return User::create([
+            'id' => $userID,
+            'role_id' => RoleID::parse(Role::User),
             'name' => $name,
             'email' => $email,
             'password' => $hashedPassword,
@@ -56,16 +61,21 @@ final class UserRepository
         User $user,
         string $name = '',
         string $email = '',
-        string $hashedPassword = ''
+        string $hashedPassword = '',
     ): User {
         $user->fill([
             'name' => $name ?: $user->name,
             'email' => $email ?: $user->email,
-            'password' => $hashedPassword ?: $hashedPassword,
+            'password' => $hashedPassword ?: $user->password,
         ])
             ->save();
 
         return $user;
+    }
+
+    public function verifyEmail(User $user): void
+    {
+        $user->markEmailAsVerified();
     }
 
     public function delete(User $user): void

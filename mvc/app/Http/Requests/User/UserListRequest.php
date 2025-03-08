@@ -38,7 +38,7 @@ final class UserListRequest extends AbstractRequest
 
     public function limit(): int
     {
-        return intval($this->validated('limit', 1) ?? 1);
+        return intval($this->validated('limit', 30) ?? 1);
     }
 
     public function name(): string

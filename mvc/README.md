@@ -23,15 +23,12 @@ alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 ```sh
 sail up
 
+# Setting Database
 sail artisan migrate --seed
-sail artisan passport:client --personal
 
-  Client ID ............................... xxxxxxxxxx  
-  Client secret ........................... xxxxxxxxxx
-
-  ✅️ Overwrite to .env
-  - PASSPORT_PERSONAL_ACCESS_CLIENT_ID
-  - PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET
+# Setting Laravel Passport
+sail artisan passport:keys
+sh ./setpassport.sh
 ```
 
 ### ide-helper

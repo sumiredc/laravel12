@@ -35,8 +35,10 @@ final class FirstSignInUseCase
 
             $this->userRepository->update(
                 user: $user,
-                hashedPassword: $password->hashed
+                hashedPassword: $password->hashed,
             );
+
+            $this->userRepository->verifyEmail($user);
 
             $token = $this->tokenRepository->createUserAuthorizationToken($user);
 
