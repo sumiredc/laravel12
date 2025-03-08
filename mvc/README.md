@@ -51,3 +51,86 @@ sail pint -v
 ```sh
 sail mysql
 ```
+
+## Mail
+
+### Mailpit
+- http://localhost:8025/
+
+## Features
+
+### Sign-in
+
+```sh
+# Admin user
+curl -v POST http://localhost/api/sign-in \
+  -H 'accept: application/json' \
+  -H 'content-type: application/json' \
+  -d '{"login_id": "admin@xxx.xxx","password": "password"}'
+```
+
+### First Sign-in
+
+```sh
+# After create the user
+curl -v POST http://localhost/api/first-sign-in \
+  -H'accept: application/json' \
+  -H'content-type: application/json' \
+  -d '{"login_id": "johndoe@example.com","password": "INITIAL PASSWORD","new_password": "NEW PASSWORD"}'
+```
+
+### Sign-out
+
+```sh
+curl -v DELETE http://localhost/api/sign-out \
+  -H'accept: application/json' \
+  -H'authorization: Bearer {PERSONAL ACCESS TOKEN}' \
+  -H'content-type: application/json'
+```
+
+### User list
+
+```sh
+curl -v GET http://localhost/api/user \
+  -H 'accept: application/json' \
+  -H 'authorization: Bearer {PERSONAL ACCESS TOKEN}' \
+  -H 'content-type: application/json'
+```
+
+### Create user
+
+```sh
+curl -v POST http://localhost/api/user \
+  -H'accept: application/json' \
+  -H'authorization: Bearer {PERSONAL ACCESS TOKEN}' \
+  -H'content-type: application/json' \
+  -d '{"name": "John Doe","email": "johndoe@example.com"}'
+```
+
+### Get user
+
+```sh
+curl -v GET http://localhost/api/user/{USER ULID} \
+  -H'accept: application/json' \
+  -H'authorization: Bearer {PERSONAL ACCESS TOKEN}' \
+  -H'content-type: application/json'
+```
+
+### Update user
+
+```sh
+curl -v PUT  http://localhost/api/user/{USER ULID} \
+  -H'accept: application/json' \
+  -H'authorization: Bearer {PERSONAL ACCESS TOKEN}' \
+  -H'content-type: application/json' \
+  -d '{"name": "John Doe2","email": "johndoe2@example.com"}'
+```
+
+### Delete user 
+
+```sh
+curl -v DELETE http://localhost/api/user/{USER ULID} \
+  -H'accept: application/json' \
+  -H'authorization: Bearer {PERSONAL ACCESS TOKEN}' \
+  -H'content-type: application/json'
+```
