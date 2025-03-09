@@ -10,7 +10,7 @@ use App\ValueObjects\Role\RoleID;
 use App\ValueObjects\User\UserID;
 use Illuminate\Support\Collection;
 
-final class UserRepository
+final class UserRepository implements UserRepositoryInterface
 {
     public function list(int $offset, int $limit, string $name, string $email): Collection
     {

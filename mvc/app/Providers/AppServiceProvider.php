@@ -7,12 +7,20 @@ namespace App\Providers;
 use App\Models\OAuthAccessToken;
 use App\Models\OAuthAuthCode;
 use App\Models\OAuthClient;
+use App\Repositories\TokenRepository;
+use App\Repositories\TokenRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 
 final class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->singleton(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->singleton(TokenRepositoryInterface::class, TokenRepository::class);
+    }
 
     public function boot(): void
     {

@@ -7,7 +7,7 @@ namespace App\Repositories;
 use App\Consts\PersonalAccessTokenName;
 use App\Models\User;
 
-final class TokenRepository
+final class TokenRepository implements TokenRepositoryInterface
 {
     public function createUserAuthorizationToken(User $user): string
     {

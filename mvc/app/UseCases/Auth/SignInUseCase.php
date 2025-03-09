@@ -7,16 +7,16 @@ namespace App\UseCases\Auth;
 use App\Exceptions\InvalidCredentialException;
 use App\Http\Requests\Auth\SignInRequest;
 use App\Http\Resources\Auth\SignInUserResource;
-use App\Repositories\TokenRepository;
-use App\Repositories\UserRepository;
+use App\Repositories\TokenRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 final class SignInUseCase
 {
     public function __construct(
-        private UserRepository $userRepository,
-        private TokenRepository $tokenRepository
+        private UserRepositoryInterface $userRepository,
+        private TokenRepositoryInterface $tokenRepository
     ) {}
 
     public function __invoke(SignInRequest $request): SignInUserResource

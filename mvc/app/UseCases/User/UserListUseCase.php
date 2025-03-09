@@ -6,12 +6,12 @@ namespace App\UseCases\User;
 
 use App\Http\Requests\User\UserListRequest;
 use App\Http\Resources\User\UserListResource;
-use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 
 final class UserListUseCase
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     ) {}
 
     public function __invoke(UserListRequest $request): UserListResource

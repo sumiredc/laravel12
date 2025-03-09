@@ -7,7 +7,7 @@ namespace App\UseCases\User;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Mail\InitialPasswordMail;
-use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 use App\ValueObjects\Password;
 use App\ValueObjects\User\UserID;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 final class UserCreateUseCase
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     ) {}
 
     public function __invoke(

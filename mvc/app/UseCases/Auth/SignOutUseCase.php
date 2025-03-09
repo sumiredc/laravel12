@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\UseCases\Auth;
 
 use App\Http\Requests\Auth\SignOutRequest;
-use App\Repositories\TokenRepository;
+use App\Repositories\TokenRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
 final class SignOutUseCase
 {
     public function __construct(
-        private TokenRepository $tokenRepository
+        private TokenRepositoryInterface $tokenRepository
     ) {}
 
     public function __invoke(SignOutRequest $request): void

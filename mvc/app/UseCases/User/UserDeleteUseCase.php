@@ -6,12 +6,14 @@ namespace App\UseCases\User;
 
 use App\Http\Requests\User\UserDeleteRequest;
 use App\Models\User;
-use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
 final class UserDeleteUseCase
 {
-    public function __construct(private UserRepository $userRepository) {}
+    public function __construct(
+        private UserRepositoryInterface $userRepository
+    ) {}
 
     public function __invoke(UserDeleteRequest $request, User $user): void
     {

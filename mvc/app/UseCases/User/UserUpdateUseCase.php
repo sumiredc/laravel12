@@ -7,12 +7,14 @@ namespace App\UseCases\User;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
-use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
 final class UserUpdateUseCase
 {
-    public function __construct(private UserRepository $userRepository) {}
+    public function __construct(
+        private UserRepositoryInterface $userRepository
+    ) {}
 
     public function __invoke(UserUpdateRequest $request, User $user): UserResource
     {
