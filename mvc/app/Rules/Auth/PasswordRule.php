@@ -29,7 +29,7 @@ final class PasswordRule implements ValidationRule, ValidatorAwareRule
 
         $validator = Validator::make(
             data: [$attribute => $value],
-            rules: [$attribute => [$rule]],
+            rules: [$attribute => [$rule, 'max:100']],
             attributes: [$attribute => $this->getCustomAttribute($attribute)]
         );
 

@@ -19,9 +19,15 @@ final class UserEmailRule implements ValidationRule, ValidatorAwareRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        $rules = [
+            'email:rfc,strict,spoof,filter',
+            'max:100',
+            'unique:users,email',
+        ];
+
         $validator = Validator::make(
             data: [$attribute => $value],
-            rules: [$attribute => ['email:rfc,strict,spoof,filter', 'max:100', 'unique:users,email']],
+            rules: [$attribute => $rules],
             attributes: [$attribute => $this->getCustomAttribute($attribute)]
         );
 

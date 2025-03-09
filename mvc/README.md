@@ -57,6 +57,24 @@ sail mysql
 ### Mailpit
 - http://localhost:8025/
 
+## Test
+
+### Setting features test
+```sh
+cp .env.example .env.testing
+sail artisan key:generate --env=testing
+```
+
+Change of .env.testing
+```diff
+DB_HOST=mysql
+DB_PORT=3306
+- DB_DATABASE=laravel
++ DB_DATABASE=testing
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
 ## Features
 
 ### Sign-in
