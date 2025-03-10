@@ -6,7 +6,4 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\AuthorityInterface;
 
-interface SignOutRequestInterface extends AuthorityInterface
-{
-    //
-}
+interface SignOutRequestInterface extends AuthorityInterface {}
