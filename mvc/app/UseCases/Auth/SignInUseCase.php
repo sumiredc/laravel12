@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\UseCases\Auth;
 
 use App\Exceptions\InvalidCredentialException;
-use App\Http\Requests\Auth\SignInRequest;
+use App\Http\Requests\Auth\SignInRequestInterface;
 use App\Http\Resources\Auth\SignInUserResource;
 use App\Repositories\TokenRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
@@ -19,7 +19,7 @@ final class SignInUseCase
         private TokenRepositoryInterface $tokenRepository
     ) {}
 
-    public function __invoke(SignInRequest $request): SignInUserResource
+    public function __invoke(SignInRequestInterface $request): SignInUserResource
     {
         $user = $this->userRepository->getByEmail($request->loginID());
         if (
