@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\UseCases\Auth;
 
 use App\Exceptions\InvalidCredentialException;
-use App\Http\Requests\Auth\FirstSignInRequest;
+use App\Http\Requests\Auth\FirstSignInRequestInterface;
 use App\Http\Resources\Auth\SignInUserResource;
 use App\Repositories\TokenRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
@@ -20,7 +20,7 @@ final class FirstSignInUseCase
         private TokenRepositoryInterface $tokenRepository
     ) {}
 
-    public function __invoke(FirstSignInRequest $request): SignInUserResource
+    public function __invoke(FirstSignInRequestInterface $request): SignInUserResource
     {
         $user = $this->userRepository->getUnverifiedByEmail($request->loginID());
         if (
@@ -33,7 +33,7 @@ final class FirstSignInUseCase
         return DB::transaction(function () use ($user, $request) {
             $password = new Password($request->newPassword());
 
-            $this->userRepository->update(
+            $user = $this->userRepository->update(
                 user: $user,
                 hashedPassword: $password->hashed,
             );

@@ -8,7 +8,7 @@ use App\Http\Requests\AbstractRequest;
 use App\Rules\Auth\CredentialStringRule;
 use App\Rules\Auth\PasswordRule;
 
-final class FirstSignInRequest extends AbstractRequest
+final class FirstSignInRequest extends AbstractRequest implements FirstSignInRequestInterface
 {
     /**
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
