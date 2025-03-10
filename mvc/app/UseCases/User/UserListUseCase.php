@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UseCases\User;
 
-use App\Http\Requests\User\UserListRequest;
+use App\Http\Requests\User\UserListRequestInterface;
 use App\Http\Resources\User\UserListResource;
 use App\Repositories\UserRepositoryInterface;
 
@@ -14,7 +14,7 @@ final class UserListUseCase
         private UserRepositoryInterface $userRepository
     ) {}
 
-    public function __invoke(UserListRequest $request): UserListResource
+    public function __invoke(UserListRequestInterface $request): UserListResource
     {
         $users = $this->userRepository->list(
             $request->offset(),

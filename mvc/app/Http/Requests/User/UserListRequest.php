@@ -9,7 +9,7 @@ use App\Http\Requests\AuthorizeTrait;
 use App\Models\User;
 use App\Rules\Common\PositiveNaturalNumberRule;
 
-final class UserListRequest extends AbstractRequest
+final class UserListRequest extends AbstractRequest implements UserListRequestInterface
 {
     use AuthorizeTrait;
 

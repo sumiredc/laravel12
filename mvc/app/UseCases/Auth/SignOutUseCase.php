@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UseCases\Auth;
 
-use App\Http\Requests\Auth\SignOutRequest;
+use App\Http\Requests\Auth\SignOutRequestInterface;
 use App\Repositories\TokenRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +14,7 @@ final class SignOutUseCase
         private TokenRepositoryInterface $tokenRepository
     ) {}
 
-    public function __invoke(SignOutRequest $request): void
+    public function __invoke(SignOutRequestInterface $request): void
     {
         DB::transaction(function () use ($request) {
             $user = $request->userOrFail();

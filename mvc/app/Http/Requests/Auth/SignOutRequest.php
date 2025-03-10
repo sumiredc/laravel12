@@ -6,4 +6,4 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\AbstractRequest;
 
-final class SignOutRequest extends AbstractRequest {}
+final class SignOutRequest extends AbstractRequest implements SignOutRequestInterface {}

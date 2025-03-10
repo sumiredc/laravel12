@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UseCases\User;
 
-use App\Http\Requests\User\UserCreateRequest;
+use App\Http\Requests\User\UserCreateRequestInterface;
 use App\Http\Resources\User\UserResource;
 use App\Mail\InitialPasswordMail;
 use App\Repositories\UserRepositoryInterface;
@@ -20,7 +20,7 @@ final class UserCreateUseCase
     ) {}
 
     public function __invoke(
-        UserCreateRequest $request
+        UserCreateRequestInterface $request
     ): UserResource {
         return DB::transaction(function () use ($request) {
             $password = Password::make();

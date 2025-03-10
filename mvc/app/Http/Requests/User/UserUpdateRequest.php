@@ -9,7 +9,7 @@ use App\Http\Requests\AuthorizeTrait;
 use App\Rules\User\UserEmailRule;
 use App\Rules\User\UserNameRule;
 
-final class UserUpdateRequest extends AbstractRequest
+final class UserUpdateRequest extends AbstractRequest implements UserUpdateRequestInterface
 {
     use AuthorizeTrait;
 

@@ -7,7 +7,7 @@ namespace App\Http\Requests\User;
 use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
 
-final class UserGetRequest extends AbstractRequest
+final class UserGetRequest extends AbstractRequest implements UserGetRequestInterface
 {
     use AuthorizeTrait;
 

@@ -7,7 +7,7 @@ namespace App\Http\Requests\User;
 use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
 
-final class UserDeleteRequest extends AbstractRequest
+final class UserDeleteRequest extends AbstractRequest implements UserDeleteRequestInterface
 {
     use AuthorizeTrait;
 
