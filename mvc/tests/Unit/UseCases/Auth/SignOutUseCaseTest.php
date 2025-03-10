@@ -13,15 +13,15 @@ describe('SignOutUseCase', function () {
     beforeEach(function () {
         $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
         $this->request = Mockery::mock(SignOutRequestInterface::class);
+        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
     });
 
-    it('Success logout user, not exception', function () {
+    it('success to logout user, not exception', function () {
         $useCase = new SignOutUseCase($this->tokenRepository);
         $user = new User;
 
         $this->request->shouldReceive('userOrFail')->andReturn($user);
         $this->tokenRepository->shouldReceive('revokeUserAuthorizationToken')->once();
-        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
 
         $useCase($this->request);
     });

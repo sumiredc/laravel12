@@ -16,9 +16,10 @@ describe('SignInUseCase', function () {
         $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
         $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
         $this->request = Mockery::mock(SignInRequestInterface::class);
+        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
     });
 
-    it('Success login user', function () {
+    it('success to login user', function () {
         $useCase = new SignInUseCase($this->userRepository, $this->tokenRepository);
         $userID = UserID::make();
         $user = (new User)->setRawAttributes([
@@ -33,14 +34,12 @@ describe('SignInUseCase', function () {
         $this->userRepository->shouldReceive('getByEmail')->once()->andReturn($user);
         $this->tokenRepository->shouldReceive('createUserAuthorizationToken')->once()->andReturn($token);
 
-        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
-
         $result = $useCase($this->request);
         expect((string) $result->resource['user']->id)->toBe((string) $userID);
         expect($result->resource['token'])->toBe($token);
     });
 
-    it('Fail not found user', function () {
+    it('fail to not found user', function () {
         $useCase = new SignInUseCase($this->userRepository, $this->tokenRepository);
         $this->userRepository->shouldReceive('getByEmail')->once()->andReturnNull();
         $this->request->shouldReceive('loginID')->andReturn('login-id');
@@ -49,7 +48,7 @@ describe('SignInUseCase', function () {
     })
         ->throws(InvalidCredentialException::class);
 
-    it('Fail invalid credentials', function () {
+    it('fail to invalid credentials', function () {
         $useCase = new SignInUseCase($this->userRepository, $this->tokenRepository);
         $userID = UserID::make();
         $user = (new User)->setRawAttributes([
