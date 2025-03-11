@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObjects;
 
+use JsonSerializable;
 use Symfony\Component\Uid\Ulid as UidUlid;
 
-abstract class Ulid
+abstract class Ulid implements JsonSerializable
 {
     private function __construct(public readonly string $value) {}
 
@@ -25,6 +26,11 @@ abstract class Ulid
     }
 
     final public function __toString(): string
+    {
+        return $this->value;
+    }
+
+    final public function jsonSerialize(): string
     {
         return $this->value;
     }

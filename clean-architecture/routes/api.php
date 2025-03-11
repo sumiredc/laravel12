@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+declare(strict_types=1);
+
+use App\Http\Controllers\Auth\SignInController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
+Route::name('sign-in')->post('/sign-in', SignInController::class);
