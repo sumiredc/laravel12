@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Application\UseCases\Auth\SignInInput;
+use App\Application\UseCases\Auth\SignInUseCase;
+use App\Exceptions\InvalidCredentialException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\SignInUserResource;
 use App\Http\Resources\ValidationErrorResource;
 use App\Http\Responses\ErrorResponse;
 use App\InterfaceAdapter\Validators\Auth\SignInValidator;
-use App\UseCases\Auth\SignInInput;
-use App\UseCases\Auth\SignInUseCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +35,12 @@ final class SignInController extends Controller
         $result = $useCase($input);
 
         if ($result->isErr()) {
-            Log::error('failed sign in', ['ex' => $result->getError()]);
+            $err = $result->getError();
+            if ($err instanceof InvalidCredentialException) {
+                return new JsonResponse(['message' => $err->getMessage()], $err->getCode());
+            }
+
+            Log::error('failed sign in', ['error' => $result->getError()]);
 
             return new ErrorResponse(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }

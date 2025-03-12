@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObjects;
 
-use JsonSerializable;
-
-final class PersonalAccessToken implements JsonSerializable
+final class OAuthTokenID
 {
-    public function __construct(public readonly string $value) {}
+    private function __construct(public readonly string $value) {}
+
+    final public static function parse(string $value): self
+    {
+        return new self($value);
+    }
 
     final public function __toString(): string
     {

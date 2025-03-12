@@ -6,28 +6,20 @@ namespace App\Domain\ValueObjects;
 
 use App\Domain\Shared\Result;
 use InvalidArgumentException;
-use JsonSerializable;
-use Symfony\Component\Uid\Ulid as UidUlid;
+use Symfony\Component\Uid\Uuid as UidUuid;
 use Throwable;
 
-abstract class Ulid implements JsonSerializable
+abstract class Uuid
 {
     private function __construct(public readonly string $value) {}
-
-    final public static function make(): static
-    {
-        $ulid = new UidUlid;
-
-        return new static($ulid->toString());
-    }
 
     /** @return Result<static,InvalidArgumentException> */
     final public static function parse(string $value): Result
     {
         try {
-            $ulid = new UidUlid($value);
+            $uuid = new UidUuid($value);
 
-            return Result::ok(new static($ulid->toString()));
+            return Result::ok(new static($uuid->toString()));
         } catch (Throwable $th) {
             return Result::err($th);
         }

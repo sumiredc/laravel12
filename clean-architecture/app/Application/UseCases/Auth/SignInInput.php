@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UseCases\Auth;
+namespace App\Application\UseCases\Auth;
 
 final class SignInInput
 {

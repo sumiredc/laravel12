@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UseCases\Auth;
+namespace App\Application\UseCases\Auth;
 
 use App\Domain\Repositories\TokenRepositoryInterface;
 use App\Domain\Repositories\UserRepositoryInterface;
@@ -11,6 +11,7 @@ use App\Exceptions\InternalServerErrorException;
 use App\Exceptions\InvalidCredentialException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Throwable;
 
 final class SignInUseCase
 {
@@ -19,7 +20,7 @@ final class SignInUseCase
         private readonly UserRepositoryInterface $userRepository
     ) {}
 
-    /** @return Result<SignInOutPut,InternalServerErrorException> */
+    /** @return Result<SignInOutPut,InvalidCredentialException,InternalServerErrorException> */
     public function __invoke(SignInInput $input): Result
     {
         $result = $this->userRepository->getByEmail($input->loginID);
@@ -36,17 +37,21 @@ final class SignInUseCase
             return Result::err(new InvalidCredentialException);
         }
 
-        $result = DB::transaction(function () use ($user) {
-            return $this->tokenRepository->createUserAuthorizationToken($user->userID);
-        });
+        try {
+            $token = DB::transaction(function () use ($user) {
+                $result = $this->tokenRepository->createUserAuthorizationToken($user->userID);
+                if ($result->isErr()) {
+                    throw $result->getError();
+                }
 
-        if ($result->isErr()) {
-            return $result;
+                return $result->getValue();
+            });
+
+            $output = new SignInOutput($user, $token);
+
+            return Result::ok($output);
+        } catch (Throwable $th) {
+            return Result::err($th);
         }
-        $token = $result->getValue();
-
-        $output = new SignInOutput($user, $token);
-
-        return Result::ok($output);
     }
 }

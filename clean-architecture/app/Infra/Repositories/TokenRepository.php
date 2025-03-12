@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Infra\Repositories;
 
 use App\Domain\Consts\PersonalAccessTokenName;
+use App\Domain\Entities\AuthUser;
 use App\Domain\Repositories\TokenRepositoryInterface;
 use App\Domain\Shared\Result;
-use App\Domain\ValueObjects\PersonalAccessToken;
+use App\Domain\ValueObjects\OAuthToken;
 use App\Domain\ValueObjects\UserID;
 use App\Models\User;
+use Laravel\Passport\Passport;
 use Symfony\Component\CssSelector\Exception\InternalErrorException;
 use Throwable;
 
@@ -22,7 +24,7 @@ final class TokenRepository implements TokenRepositoryInterface
 
         try {
             $tokenResult = $user->createToken(PersonalAccessTokenName::UserAuthorization->value);
-            $token = new PersonalAccessToken($tokenResult->accessToken);
+            $token = new OAuthToken($tokenResult->accessToken);
 
             return Result::ok($token);
         } catch (Throwable $th) {
@@ -32,13 +34,11 @@ final class TokenRepository implements TokenRepositoryInterface
         }
     }
 
-    public function revokeUserAuthorizationToken(UserID $userID): Result
+    public function revokeUserAuthorizationToken(AuthUser $auth): Result
     {
-        $user = new User;
-        $user->id = $userID;
-
         try {
-            $user->token()->revoke();
+            Passport::token()->where('id', $auth->personalAccessToken->tokenID->value)
+                ->update(['revoked' => true]);
 
             return Result::ok(null);
         } catch (Throwable $th) {

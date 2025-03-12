@@ -6,7 +6,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-final class InternalServerError extends Exception
+final class InternalServerErrorException extends Exception
 {
     protected $message = 'Internal Server Error';
 

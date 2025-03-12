@@ -10,9 +10,10 @@ use App\Domain\Repositories\UserRepositoryInterface;
 use App\Domain\Shared\Result;
 use App\Domain\ValueObjects\Password;
 use App\Domain\ValueObjects\UserID;
-use App\Exceptions\InternalServerError;
+use App\Exceptions\InternalServerErrorException;
 use App\Models\User as ModelsUser;
 use Carbon\Carbon;
+use InvalidArgumentException;
 use Throwable;
 
 final class UserRepository implements UserRepositoryInterface
@@ -34,7 +35,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok($users->map(fn ($m) => $this->toDomain($m))->toArray());
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -53,7 +54,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok($user);
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -69,7 +70,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok($user);
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -87,7 +88,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok($user);
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -105,7 +106,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok($user);
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -124,7 +125,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok($this->toDomain($model));
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -141,7 +142,7 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok(null);
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
@@ -157,16 +158,26 @@ final class UserRepository implements UserRepositoryInterface
 
             return Result::ok(null);
         } catch (Throwable $th) {
-            $err = new InternalServerError(previous: $th);
+            $err = new InternalServerErrorException(previous: $th);
 
             return Result::err($err);
         }
     }
 
+    /** @throws InvalidArgumentException */
     private function toDomain(ModelsUser $user): User
     {
+        $result = UserID::parse($user->id);
+
+        // NOTE: NO ERROR - Refer to DB for value
+        if ($result->isErr()) {
+            throw $result->getError();
+        }
+
+        $userID = $result->getValue();
+
         return new User(
-            userID: UserID::parse($user->id),
+            userID: $userID,
             name: $user->name,
             email: $user->email,
             hashedPassword: $user->password,
