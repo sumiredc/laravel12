@@ -16,10 +16,10 @@ use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use InvalidArgumentException;
 
-final class AuthRequest extends FormRequest
+abstract class AbstractRequest extends FormRequest
 {
     /** @return Result<AuthUser,UnauthorizedException> */
-    public function authUser(): Result
+    final public function authUser(): Result
     {
         $auth = $this->user();
 
@@ -33,7 +33,7 @@ final class AuthRequest extends FormRequest
         return Result::ok($user);
     }
 
-    public function authUserOrNull(): ?AuthUser
+    final public function authUserOrNull(): ?AuthUser
     {
         $auth = $this->user();
 
@@ -67,7 +67,6 @@ final class AuthRequest extends FormRequest
             personalAccessToken: $personalAccessToken,
             name: $user->name,
             email: $user->email,
-            hashedPassword: $user->password,
         );
 
         return $auth;

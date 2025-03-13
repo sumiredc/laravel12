@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\UseCases\Auth;
+namespace App\UseCases\Auth;
 
 use App\Domain\Entities\AuthUser;
 

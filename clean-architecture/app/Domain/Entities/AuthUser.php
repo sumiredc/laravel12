@@ -13,11 +13,5 @@ final class AuthUser
         public readonly string $name,
         public readonly string $email,
         public readonly OAuthPersonalAccessToken $personalAccessToken,
-        private readonly string $hashedPassword,
     ) {}
-
-    public function hashedPassword(): string
-    {
-        return $this->hashedPassword;
-    }
 }

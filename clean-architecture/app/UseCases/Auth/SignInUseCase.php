@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\UseCases\Auth;
+namespace App\UseCases\Auth;
 
 use App\Domain\Repositories\TokenRepositoryInterface;
 use App\Domain\Repositories\UserRepositoryInterface;
@@ -23,16 +23,17 @@ final class SignInUseCase
     /** @return Result<SignInOutPut,InvalidCredentialException,InternalServerErrorException> */
     public function __invoke(SignInInput $input): Result
     {
-        $result = $this->userRepository->getByEmail($input->loginID);
+        $result = $this->userRepository->getByEmailWithPassword($input->loginID);
         if ($result->isErr()) {
             return $result;
         }
 
-        $user = $result->getValue();
+        [$user, $password] = $result->getValue();
 
         if (
             is_null($user)
-            || !Hash::check($input->password, $user->hashedPassword())
+            || is_null($password)
+            || !Hash::check($input->password, $password->value)
         ) {
             return Result::err(new InvalidCredentialException);
         }

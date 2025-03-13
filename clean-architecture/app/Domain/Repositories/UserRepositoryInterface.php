@@ -7,8 +7,11 @@ namespace App\Domain\Repositories;
 use App\Domain\Entities\User;
 use App\Domain\Entities\UserSearchParams;
 use App\Domain\Shared\Result;
+use App\Domain\ValueObjects\HashedPassword;
 use App\Domain\ValueObjects\Password;
 use App\Domain\ValueObjects\UserID;
+use App\Exceptions\InternalServerErrorException;
+use App\Exceptions\NotFoundException;
 
 interface UserRepositoryInterface
 {
@@ -21,8 +24,8 @@ interface UserRepositoryInterface
     /** @return Result<?User,InternalServerErrorException|NotFoundException> */
     public function get(UserID $userID): Result;
 
-    /** @return Result<?User,InternalServerErrorException|NotFoundException> */
-    public function getByEmail(string $email): Result;
+    /** @return Result<array{0:?User,1:?HashedPassword},InternalServerErrorException|NotFoundException> */
+    public function getByEmailWithPassword(string $email): Result;
 
     /** @return Result<?User,InternalServerErrorException|NotFoundException> */
     public function getUnverifiedByEmail(string $email): Result;

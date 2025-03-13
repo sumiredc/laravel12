@@ -4,32 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Application\UseCases\Auth\SignInInput;
-use App\Application\UseCases\Auth\SignInUseCase;
 use App\Exceptions\InvalidCredentialException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\SignInRequest;
 use App\Http\Resources\Auth\SignInUserResource;
-use App\Http\Resources\ValidationErrorResource;
 use App\Http\Responses\ErrorResponse;
-use App\InterfaceAdapter\Validators\Auth\SignInValidator;
+use App\UseCases\Auth\SignInInput;
+use App\UseCases\Auth\SignInUseCase;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 final class SignInController extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(SignInRequest $request): JsonResponse
     {
-        $validator = SignInValidator::make($request);
-
-        if ($validator->fails()) {
-            $resource = new ValidationErrorResource($validator->errors()->toArray());
-
-            return new JsonResponse($resource);
-        }
-
-        $safe = $validator->safe();
-        $input = new SignInInput($safe->input('login_id'), $safe->input('password'));
+        $input = new SignInInput($request->loginID(), $request->password());
         $useCase = app(SignInUseCase::class);
 
         $result = $useCase($input);

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Infra\Repositories;
 
+use App\Domain\Consts\RoleID;
 use App\Domain\Entities\User;
 use App\Domain\Entities\UserSearchParams;
 use App\Domain\Repositories\UserRepositoryInterface;
 use App\Domain\Shared\Result;
+use App\Domain\ValueObjects\HashedPassword;
 use App\Domain\ValueObjects\Password;
 use App\Domain\ValueObjects\UserID;
 use App\Exceptions\InternalServerErrorException;
@@ -45,6 +47,7 @@ final class UserRepository implements UserRepositoryInterface
     {
         $model = new ModelsUser;
         $model->id = $user->userID->value;
+        $model->role_id = $user->roleID->value;
         $model->name = $user->name;
         $model->email = $user->email;
         $model->password = $password->hashed;
@@ -87,6 +90,30 @@ final class UserRepository implements UserRepositoryInterface
             $user = $model ? $this->toDomain($model) : null;
 
             return Result::ok($user);
+        } catch (Throwable $th) {
+            $err = new InternalServerErrorException(previous: $th);
+
+            return Result::err($err);
+        }
+    }
+
+    public function getByEmailWithPassword(string $email): Result
+    {
+        $query = ModelsUser::query();
+
+        try {
+            $model = $query->whereEmail($email)
+                ->whereNotNull('email_verified_at')
+                ->first();
+
+            $user = $model ? $this->toDomain($model) : null;
+            if (is_null($user)) {
+                return Result::ok([null, null]);
+            }
+
+            $password = $this->toPasswordDomain($model);
+
+            return Result::ok([$user, $password]);
         } catch (Throwable $th) {
             $err = new InternalServerErrorException(previous: $th);
 
@@ -178,9 +205,19 @@ final class UserRepository implements UserRepositoryInterface
 
         return new User(
             userID: $userID,
+            roleID: RoleID::from($user->role_id),
             name: $user->name,
             email: $user->email,
-            hashedPassword: $user->password,
         );
+    }
+
+    private function toPasswordDomain(ModelsUser $user): HashedPassword
+    {
+        $result = HashedPassword::parse($user->password);
+        if ($result->isErr()) {
+            throw $result->getError();
+        }
+
+        return $result->getValue();
     }
 }
