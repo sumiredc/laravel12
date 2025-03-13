@@ -63,6 +63,19 @@ final class UserRepository implements UserRepositoryInterface
         }
     }
 
+    public function existsByEmail(string $email): Result
+    {
+        try {
+            $isExists = ModelsUser::whereEmail($email)->exists();
+
+            return Result::ok($isExists);
+        } catch (Throwable $th) {
+            $err = new InternalServerErrorException(previous: $th);
+
+            return Result::err($err);
+        }
+    }
+
     public function get(UserID $userID): Result
     {
         $query = ModelsUser::query();

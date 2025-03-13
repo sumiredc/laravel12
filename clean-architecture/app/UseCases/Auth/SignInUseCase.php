@@ -11,7 +11,6 @@ use App\Exceptions\InternalServerErrorException;
 use App\Exceptions\InvalidCredentialException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Throwable;
 
 final class SignInUseCase
 {
@@ -38,21 +37,16 @@ final class SignInUseCase
             return Result::err(new InvalidCredentialException);
         }
 
-        try {
-            $token = DB::transaction(function () use ($user) {
-                $result = $this->tokenRepository->createUserAuthorizationToken($user->userID);
-                if ($result->isErr()) {
-                    throw $result->getError();
-                }
+        return DB::transaction(function () use ($user) {
+            $result = $this->tokenRepository->createUserAuthorizationToken($user->userID);
+            if ($result->isErr()) {
+                throw $result->getError();
+            }
 
-                return $result->getValue();
-            });
-
+            $token = $result->getValue();
             $output = new SignInOutput($user, $token);
 
             return Result::ok($output);
-        } catch (Throwable $th) {
-            return Result::err($th);
-        }
+        });
     }
 }

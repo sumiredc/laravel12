@@ -22,7 +22,6 @@ final class UserEmailRule implements ValidationRule, ValidatorAwareRule
         $rules = [
             'email:rfc,strict,spoof,filter',
             'max:100',
-            'unique:users,email',
         ];
 
         $validator = Validator::make(

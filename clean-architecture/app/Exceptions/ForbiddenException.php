@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-use Illuminate\Contracts\Debug\ShouldntReport;
+use Exception;
 
-final class ForbiddenException extends AppError implements ShouldntReport
+final class ForbiddenException extends Exception
 {
     protected $message = 'You don’t have permission to access this endpoint.';
 

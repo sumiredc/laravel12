@@ -24,6 +24,9 @@ interface UserRepositoryInterface
     /** @return Result<?User,InternalServerErrorException|NotFoundException> */
     public function get(UserID $userID): Result;
 
+    /** @return Result<bool,InternalServerErrorException> */
+    public function existsByEmail(string $email): Result;
+
     /** @return Result<array{0:?User,1:?HashedPassword},InternalServerErrorException|NotFoundException> */
     public function getByEmailWithPassword(string $email): Result;
 

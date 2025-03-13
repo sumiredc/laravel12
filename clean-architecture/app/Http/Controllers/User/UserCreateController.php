@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\User;
 
+use App\Exceptions\EmailAlreadyTakenException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Resources\User\UserResource;
@@ -22,7 +23,12 @@ final class UserCreateController extends Controller
         $result = $useCase($input);
 
         if ($result->isErr()) {
-            Log::error('failed to create user', ['err' => $result->getError()]);
+            $err = $result->getError();
+            if ($err instanceof EmailAlreadyTakenException) {
+                return new JsonResponse(['message' => $err->getMessage()], $err->getCode());
+            }
+
+            Log::error('failed to create user', ['err' => $err]);
 
             return new ErrorResponse(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }

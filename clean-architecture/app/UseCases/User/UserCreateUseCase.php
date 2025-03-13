@@ -10,6 +10,7 @@ use App\Domain\Repositories\UserRepositoryInterface;
 use App\Domain\Shared\Result;
 use App\Domain\ValueObjects\Password;
 use App\Domain\ValueObjects\UserID;
+use App\Exceptions\EmailAlreadyTakenException;
 use App\Exceptions\InternalServerErrorException;
 use Illuminate\Support\Facades\DB;
 
@@ -19,9 +20,20 @@ final class UserCreateUseCase
         private readonly UserRepositoryInterface $userRepository
     ) {}
 
-    /** @return Result<UserCreateOutput,InternalServerErrorException> */
+    /** @return Result<UserCreateOutput,EmailAlreadyTakenException|InternalServerErrorException> */
     public function __invoke(UserCreateInput $input): Result
     {
+        $result = $this->userRepository->existsByEmail($input->email);
+        if ($result->isErr()) {
+            return $result;
+        }
+
+        if ($result->getValue()) {
+            $err = new EmailAlreadyTakenException;
+
+            return Result::err($err);
+        }
+
         $userID = UserID::make();
         $user = new User(
             userID: $userID,
@@ -35,9 +47,7 @@ final class UserCreateUseCase
             $result = $this->userRepository->create($user, $password);
 
             if ($result->isErr()) {
-                $err = new InternalServerErrorException(previous: $result->getError());
-
-                return Result::err($err);
+                return Result::err($result->getError());
             }
 
             $output = new UserCreateOutput($result->getValue());
