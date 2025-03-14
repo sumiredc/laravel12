@@ -16,15 +16,17 @@ final class SignOutUseCase
     /** @return Result<SignOutOutput,InternalServerErrorException> */
     public function __invoke(SignOutInput $input): Result
     {
-        return DB::transaction(function () use ($input) {
-            $result = $this->tokenRepository->revokeUserAuthorizationToken($input->user);
-            if ($result->isErr()) {
-                return Result::err($result->getError());
-            }
+        DB::beginTransaction();
+        $result = $this->tokenRepository->revokeUserAuthorizationToken($input->user);
+        if ($result->isErr()) {
+            DB::rollBack();
 
-            $output = new SignOutOutput;
+            return Result::err($result->getError());
+        }
 
-            return Result::ok($output);
-        });
+        $output = new SignOutOutput;
+        DB::commit();
+
+        return Result::ok($output);
     }
 }

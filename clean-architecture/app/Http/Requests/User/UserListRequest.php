@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Domain\Consts\RoleID;
 use App\Http\Requests\AbstractRequest;
-use App\Http\Requests\AuthorizeTrait;
-use App\Models\User;
 use App\Rules\Common\PositiveNaturalNumberRule;
 
 final class UserListRequest extends AbstractRequest
 {
-    use AuthorizeTrait;
-
     public function authorize(): bool
     {
-        return $this->can('list', [User::class]);
+        $auth = $this->authUserOrNull();
+
+        if (is_null($auth)) {
+            return false;
+        }
+
+        return (bool) ($auth->roleID === RoleID::Admin);
     }
 
     /**

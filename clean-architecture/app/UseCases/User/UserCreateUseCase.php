@@ -6,6 +6,7 @@ namespace App\UseCases\User;
 
 use App\Domain\Consts\RoleID;
 use App\Domain\Entities\User;
+use App\Domain\Repositories\MailRepositoryInterface;
 use App\Domain\Repositories\UserRepositoryInterface;
 use App\Domain\Shared\Result;
 use App\Domain\ValueObjects\Password;
@@ -17,7 +18,8 @@ use Illuminate\Support\Facades\DB;
 final class UserCreateUseCase
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly MailRepositoryInterface $mailRepository,
     ) {}
 
     /** @return Result<UserCreateOutput,EmailAlreadyTakenException|InternalServerErrorException> */
@@ -43,17 +45,22 @@ final class UserCreateUseCase
         );
         $password = Password::make();
 
-        return DB::transaction(function () use ($user, $password) {
-            $result = $this->userRepository->create($user, $password);
+        DB::beginTransaction();
 
-            if ($result->isErr()) {
-                return Result::err($result->getError());
-            }
+        $result = $this->userRepository->create($user, $password);
+        if ($result->isErr()) {
+            DB::rollBack();
 
-            $output = new UserCreateOutput($result->getValue());
+            return Result::err($result->getError());
+        }
 
-            return Result::ok($output);
-        });
+        $result = $this->mailRepository->sendInitialPassword($user, $password);
+
+        $output = new UserCreateOutput($user);
+
+        DB::commit();
+
+        return Result::ok($output);
 
     }
 }

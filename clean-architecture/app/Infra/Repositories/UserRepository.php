@@ -13,8 +13,10 @@ use App\Domain\ValueObjects\HashedPassword;
 use App\Domain\ValueObjects\Password;
 use App\Domain\ValueObjects\UserID;
 use App\Exceptions\InternalServerErrorException;
+use App\Exceptions\NotFoundException;
 use App\Models\User as ModelsUser;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Throwable;
 
@@ -63,10 +65,16 @@ final class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function existsByEmail(string $email): Result
+    public function existsByEmail(string $email, ?UserID $ignoreUserID = null): Result
     {
+        $query = ModelsUser::whereEmail($email);
+
+        if ($ignoreUserID) {
+            $query->whereNot('id', $ignoreUserID->value);
+        }
+
         try {
-            $isExists = ModelsUser::whereEmail($email)->exists();
+            $isExists = $query->exists();
 
             return Result::ok($isExists);
         } catch (Throwable $th) {
@@ -100,6 +108,7 @@ final class UserRepository implements UserRepositoryInterface
             $model = $query->whereEmail($email)
                 ->whereNotNull('email_verified_at')
                 ->first();
+
             $user = $model ? $this->toDomain($model) : null;
 
             return Result::ok($user);
@@ -121,7 +130,7 @@ final class UserRepository implements UserRepositoryInterface
 
             $user = $model ? $this->toDomain($model) : null;
             if (is_null($user)) {
-                return Result::ok([null, null]);
+                return Result::err(new NotFoundException);
             }
 
             $password = $this->toPasswordDomain($model);
@@ -134,17 +143,21 @@ final class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function getUnverifiedByEmail(string $email): Result
+    public function getUnverifiedByEmailWithPassword(string $email): Result
     {
-        $query = ModelsUser::query();
-
         try {
-            $model = $query->whereEmail($email)
+            $model = ModelsUser::whereEmail($email)
                 ->whereNull('email_verified_at')
                 ->first();
             $user = $model ? $this->toDomain($model) : null;
 
-            return Result::ok($user);
+            if (is_null($user)) {
+                return Result::err(new NotFoundException);
+            }
+
+            $password = $this->toPasswordDomain($model);
+
+            return Result::ok([$user, $password]);
         } catch (Throwable $th) {
             $err = new InternalServerErrorException(previous: $th);
 
@@ -154,16 +167,20 @@ final class UserRepository implements UserRepositoryInterface
 
     public function update(User $user, ?Password $password = null): Result
     {
-        $model = new ModelsUser;
-        $model->id = $user->userID->value;
-        $model->name = $user->name ?: $model->name;
-        $model->email = $user->email ?: $model->email;
-        $model->password = $password->hashed ?: $model->password;
+        $attributes = [
+            'name' => $user->name,
+            'email' => $user->email,
+        ];
+
+        if ($password) {
+            $attributes['password'] = $password->hashed;
+        }
 
         try {
-            $model->save();
+            ModelsUser::whereId($user->userID->value)
+                ->update($attributes);
 
-            return Result::ok($this->toDomain($model));
+            return Result::ok($user);
         } catch (Throwable $th) {
             $err = new InternalServerErrorException(previous: $th);
 
@@ -171,14 +188,14 @@ final class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function verifyEmail(User $user): Result
+    public function updatePasswordAndVerifyEmail(User $user, Password $password): Result
     {
-        $model = new ModelsUser;
-        $model->id = $user->userID->value;
-        $model->email_verified_at = Carbon::now();
-
         try {
-            $model->save();
+            ModelsUser::whereId($user->userID->value)
+                ->update([
+                    'password' => $password->hashed,
+                    'email_verified_at' => Carbon::now(),
+                ]);
 
             return Result::ok(null);
         } catch (Throwable $th) {
@@ -188,15 +205,12 @@ final class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function delete(User $user): Result
+    public function delete(UserID $userID): Result
     {
-        $model = new ModelsUser;
-        $model->id = $user->userID->value;
-
         try {
-            $model->delete();
+            $count = ModelsUser::whereId($userID->value)->delete();
 
-            return Result::ok(null);
+            return Result::ok($count);
         } catch (Throwable $th) {
             $err = new InternalServerErrorException(previous: $th);
 

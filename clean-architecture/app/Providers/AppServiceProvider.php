@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Repositories\MailRepositoryInterface;
 use App\Domain\Repositories\TokenRepositoryInterface;
 use App\Domain\Repositories\UserRepositoryInterface;
+use App\Infra\Repositories\MailRepository;
 use App\Infra\Repositories\TokenRepository;
 use App\Infra\Repositories\UserRepository;
 use App\Models\OAuthAccessToken;
@@ -20,6 +22,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(UserRepositoryInterface::class, UserRepository::class);
         $this->app->singleton(TokenRepositoryInterface::class, TokenRepository::class);
+        $this->app->singleton(MailRepositoryInterface::class, MailRepository::class);
     }
 
     public function boot(): void

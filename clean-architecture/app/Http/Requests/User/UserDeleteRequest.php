@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Domain\Consts\RoleID;
 use App\Http\Requests\AbstractRequest;
-use App\Http\Requests\AuthorizeTrait;
 
 final class UserDeleteRequest extends AbstractRequest
 {
-    use AuthorizeTrait;
-
     public function authorize(): bool
     {
-        return $this->can('delete', [$this->route('user')]);
+        $auth = $this->authUserOrNull();
+
+        if (is_null($auth)) {
+            return false;
+        }
+
+        return (bool) ($auth->roleID === RoleID::Admin);
     }
 }

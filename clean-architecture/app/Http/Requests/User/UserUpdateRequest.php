@@ -4,18 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Domain\Consts\RoleID;
 use App\Http\Requests\AbstractRequest;
-use App\Http\Requests\AuthorizeTrait;
 use App\Rules\User\UserEmailRule;
 use App\Rules\User\UserNameRule;
 
 final class UserUpdateRequest extends AbstractRequest
 {
-    use AuthorizeTrait;
-
     public function authorize(): bool
     {
-        return $this->can('update', [$this->route('user')]);
+        $auth = $this->authUserOrNull();
+
+        if (is_null($auth)) {
+            return false;
+        }
+
+        if ($auth->roleID === RoleID::Admin) {
+            return true;
+        }
+
+        return (bool) ($auth->userID->value === $this->route('userID'));
     }
 
     /**

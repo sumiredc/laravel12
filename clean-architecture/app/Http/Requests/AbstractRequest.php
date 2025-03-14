@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Domain\Consts\RoleID;
 use App\Domain\Entities\AuthUser;
 use App\Domain\Entities\OAuthPersonalAccessToken;
 use App\Domain\Shared\Result;
@@ -55,6 +56,7 @@ abstract class AbstractRequest extends FormRequest
         }
 
         $userID = $result->getValue();
+        $roleID = RoleID::from($user->role_id);
 
         /** @var OAuthAccessToken $tokenModel */
         $tokenModel = $user->token();
@@ -64,6 +66,7 @@ abstract class AbstractRequest extends FormRequest
 
         $auth = new AuthUser(
             userID: $userID,
+            roleID: $roleID,
             personalAccessToken: $personalAccessToken,
             name: $user->name,
             email: $user->email,

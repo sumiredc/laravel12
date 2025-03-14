@@ -25,20 +25,20 @@ interface UserRepositoryInterface
     public function get(UserID $userID): Result;
 
     /** @return Result<bool,InternalServerErrorException> */
-    public function existsByEmail(string $email): Result;
+    public function existsByEmail(string $email, ?UserID $ignoreUserID = null): Result;
 
-    /** @return Result<array{0:?User,1:?HashedPassword},InternalServerErrorException|NotFoundException> */
+    /** @return Result<array{0:User,1:HashedPassword},InternalServerErrorException|NotFoundException> */
     public function getByEmailWithPassword(string $email): Result;
 
-    /** @return Result<?User,InternalServerErrorException|NotFoundException> */
-    public function getUnverifiedByEmail(string $email): Result;
+    /** @return Result<array{0:User,1:HashedPassword},InternalServerErrorException|NotFoundException> */
+    public function getUnverifiedByEmailWithPassword(string $email): Result;
 
     /** @return Result<User,InternalServerErrorException> */
     public function update(User $user, ?Password $password = null): Result;
 
     /** @return Result<null,InternalServerErrorException> */
-    public function verifyEmail(User $user): Result;
+    public function updatePasswordAndVerifyEmail(User $user, Password $password): Result;
 
-    /** @return Result<null,InternalServerErrorException> */
-    public function delete(User $user): Result;
+    /** @return Result<int,InternalServerErrorException> */
+    public function delete(UserID $userID): Result;
 }
