@@ -24,8 +24,8 @@ final class UserListRequest extends AbstractRequest implements UserListRequestIn
     public function rules(): array
     {
         return [
-            'offset' => ['nullable', app(PositiveNaturalNumberRule::class)],
-            'limit' => ['nullable', app(PositiveNaturalNumberRule::class), 'max:100'],
+            'offset' => ['nullable', 'integer', app(PositiveNaturalNumberRule::class), 'max:' . PHP_INT_MAX],
+            'limit' => ['nullable', 'integer', app(PositiveNaturalNumberRule::class), 'max:100'],
             'name' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'string', 'max:50'],
         ];
