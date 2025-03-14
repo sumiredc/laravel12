@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Rules\User\UserEmailRule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\PresenceVerifierInterface;
 
-// TODO: Feature to Unit
 describe('UserEmailRule', function () {
     it('allows valid email', function ($v) {
         $rule = new UserEmailRule;
@@ -35,23 +35,20 @@ describe('UserEmailRule', function () {
             'valid over-length(101) email' => sprintf('%s@xxxxx.xxx', str_repeat('a', 91)),
         ]);
 
-    // it('rejects invalid duplicate email', function () {
-    //     $email = 'aaa@xxx.xxx';
+    it('rejects invalid duplicate email', function () {
+        $presenceVerifierMock = Mockery::mock(PresenceVerifierInterface::class);
+        $presenceVerifierMock->shouldReceive('getCount')
+            ->andReturn(1);
+        $presenceVerifierMock->shouldReceive('setConnection');
+        Validator::setPresenceVerifier($presenceVerifierMock);
 
-    //     User::factory()->create([
-    //         'id' => UserID::make(),
-    //         'role_id' => RoleID::parse(Role::User),
-    //         'name' => 'test name',
-    //         'email' => 'aaa@xxx.xxx',
-    //         'password' => 'password',
-    //     ]);
+        $email = 'aaa@xxx.xxx';
+        $rule = new UserEmailRule;
+        $validator = Validator::make(
+            data: ['v' => $email],
+            rules: ['v' => $rule]
+        );
 
-    //     $rule = new UserEmailRule;
-    //     $validator = Validator::make(
-    //         data: ['v' => $email],
-    //         rules: ['v' => $rule]
-    //     );
-
-    //     expect($validator->fails())->toBeTrue();
-    // });
+        expect($validator->fails())->toBeTrue();
+    });
 });
