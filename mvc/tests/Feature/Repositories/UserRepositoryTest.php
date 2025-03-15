@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('list', function () {
-    \it('return to search result', function ($name, $email, $count) {
+    \it('filters users based on search criteria', function ($name, $email, $count) {
         User::factory()->userRole()->createMany([
             ['name' => 'koko-san', 'email' => 'a@xxx.xx'],
             ['name' => 'popo-san', 'email' => 'b@yyy.yy'],
@@ -27,14 +27,14 @@ use Illuminate\Support\Facades\Hash;
         \expect($result->count())->toBe($count);
     })
         ->with([
-            'narrow down name' => ['koko', '', 1],
-            'narrow down email' => ['', 'yyy', 1],
-            'narrow down name and email' => ['toto-san', 'c@zzz.zz', 1],
-            'narrow down to all match' => ['san', '', 3],
-            'narrow down to result zero' => ['popo', 'xxx', 0],
+            'filters by name' => ['koko', '', 1],
+            'filters by email' => ['', 'yyy', 1],
+            'filters by name and email' => ['toto-san', 'c@zzz.zz', 1],
+            'filters by partial match on name' => ['san', '', 3],
+            'returns no results for mismatched filters' => ['popo', 'xxx', 0],
         ]);
 
-    \it('return to users count of limit and offset', function ($offset, $limit, $count) {
+    \it('retrieves users with pagination', function ($offset, $limit, $count) {
         User::factory(100)->userRole()->create();
 
         $result = $this->repository->list($offset, $limit, '', '');
@@ -42,13 +42,13 @@ use Illuminate\Support\Facades\Hash;
         \expect($result->count())->toBe($count);
     })
         ->with([
-            'check limit' => [0, 99, 99],
-            'check offset' => [48, 100, 52],
+            'applies limit correctly' => [0, 99, 99],
+            'applies offset correctly' => [48, 100, 52],
         ]);
 });
 
 \describe('create', function () {
-    \it('should create user', function () {
+    \it('creates a new user', function () {
         $userID = UserID::make();
         $name = 'sample user';
         $email = 'sample@xxx.xx';
@@ -65,7 +65,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('get', function () {
-    \it('should get user', function () {
+    \it('retrieves an existing user', function () {
         $user = User::factory()->userRole()->create();
 
         $result = $this->repository->get($user->id);
@@ -74,7 +74,7 @@ use Illuminate\Support\Facades\Hash;
         \expect((string) $result->id)->toBe((string) $user->id);
     });
 
-    \it('should return null', function () {
+    \it('returns null if user does not exist', function () {
         $userID = UserID::make();
         User::factory()->userRole()->create();
 
@@ -85,7 +85,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('getByEmail', function () {
-    \it('should get verified user', function () {
+    \it('retrieves a verified user by email', function () {
         $email = 'koko[a]xxx.xx';
         User::factory(10)->userRole()->create();
         User::factory()->userRole()->create(['email' => $email]);
@@ -96,7 +96,7 @@ use Illuminate\Support\Facades\Hash;
         \expect((string) $result->email)->toBe($email);
     });
 
-    \it('should return null', function () {
+    \it('returns null if no user is found', function () {
         User::factory(10)->userRole()->create();
 
         $result = $this->repository->getByEmail('zzz[a]xxx.gg');
@@ -104,7 +104,7 @@ use Illuminate\Support\Facades\Hash;
         \expect($result)->toBeNull();
     });
 
-    \it('should return null unverified user', function () {
+    \it('returns null for unverified user', function () {
         $email = 'koko[a]xxx.xx';
         User::factory(10)->userRole()->create();
         User::factory()->userRole()->unverified()->create(['email' => $email]);
@@ -116,7 +116,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('getUnverifiedByEmail', function () {
-    \it('should to get unverified user', function () {
+    \it('retrieves a verified user by email', function () {
         $email = 'koko[a]xxx.xx';
         User::factory(10)->userRole()->create();
         User::factory()->userRole()->unverified()->create(['email' => $email]);
@@ -127,7 +127,7 @@ use Illuminate\Support\Facades\Hash;
         \expect((string) $result->email)->toBe($email);
     });
 
-    \it('should to return null', function () {
+    \it('returns null if no user is found', function () {
         User::factory(10)->userRole()->create();
 
         $result = $this->repository->getUnverifiedByEmail('zzz[a]xxx.gg');
@@ -135,7 +135,7 @@ use Illuminate\Support\Facades\Hash;
         \expect($result)->toBeNull();
     });
 
-    \it('should to return null verified user', function () {
+    \it('returns null for verified user', function () {
         $email = 'koko[a]xxx.xx';
         User::factory(10)->userRole()->create();
         User::factory()->userRole()->create(['email' => $email]);
@@ -147,7 +147,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('update', function () {
-    \it('should to update user', function () {
+    \it('updates user information', function () {
         $user = User::factory()->userRole()->create();
         $name = 'updated name';
         $email = 'updated@xxx.xx';
@@ -160,7 +160,7 @@ use Illuminate\Support\Facades\Hash;
         \expect($result->password)->toBe($password);
     });
 
-    \it('should to unupdate user', function () {
+    \it('keeps user information unchanged when no updates provided', function () {
         $user = User::factory()->userRole()->create();
 
         $result = $this->repository->update($user);
@@ -172,7 +172,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('verifyEmail', function () {
-    \it('should to verifed', function () {
+    \it('makes user email as verified', function () {
         $user = User::factory()->userRole()->unverified()->create();
 
         \expect($user->email_verified_at)->toBeNull();
@@ -184,7 +184,7 @@ use Illuminate\Support\Facades\Hash;
 });
 
 \describe('delete', function () {
-    \it('should to delete user', function () {
+    \it('removes user from database', function () {
         $user = User::factory()->userRole()->create();
 
         $this->repository->delete($user);

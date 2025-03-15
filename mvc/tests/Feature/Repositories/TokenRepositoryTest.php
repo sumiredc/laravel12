@@ -22,7 +22,7 @@ use Database\Seeders\RoleSeeder;
 });
 
 \describe('createUserAuthorizationToken', function () {
-    \it('return to access token', function () {
+    \it('returns an access token', function () {
         $user = User::factory()->create([
             'id' => UserID::make(),
             'role_id' => RoleID::parse(Role::Admin),
@@ -36,7 +36,7 @@ use Database\Seeders\RoleSeeder;
 });
 
 \describe('revokeUserAuthorizationToken', function () {
-    \it('should revoke access token', function () {
+    \it('revokes the access token', function () {
         $user = User::factory()->create([
             'id' => UserID::make(),
             'role_id' => RoleID::parse(Role::Admin),
@@ -53,7 +53,7 @@ use Database\Seeders\RoleSeeder;
 });
 
 \describe('deleteUserAuthorizationToken', function () {
-    \it('should delete access token', function () {
+    \it('deletes the access token', function () {
         $user = User::factory()->create([
             'id' => UserID::make(),
             'role_id' => RoleID::parse(Role::Admin),
