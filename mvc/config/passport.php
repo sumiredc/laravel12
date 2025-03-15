@@ -28,9 +28,9 @@ return [
     |
     */
 
-    'private_key' => env('PASSPORT_PRIVATE_KEY'),
+    'private_key' => \env('PASSPORT_PRIVATE_KEY'),
 
-    'public_key' => env('PASSPORT_PUBLIC_KEY'),
+    'public_key' => \env('PASSPORT_PUBLIC_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,7 +43,7 @@ return [
     |
     */
 
-    'connection' => env('PASSPORT_CONNECTION'),
+    'connection' => \env('PASSPORT_CONNECTION'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,8 +70,8 @@ return [
     */
 
     'personal_access_client' => [
-        'id' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_ID'),
-        'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
+        'id' => \env('PASSPORT_PERSONAL_ACCESS_CLIENT_ID'),
+        'secret' => \env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
     ],
 
 ];

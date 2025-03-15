@@ -6,7 +6,7 @@ use App\Http\Controllers\Error\NotFoundController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return \view('welcome');
 });
 
 Route::fallback(NotFoundController::class);

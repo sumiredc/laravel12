@@ -14,6 +14,8 @@ use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 
+use function now;
+
 final class AppServiceProvider extends ServiceProvider
 {
     public function register(): void

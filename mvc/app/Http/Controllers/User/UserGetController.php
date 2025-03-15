@@ -10,6 +10,8 @@ use App\Models\User;
 use App\UseCases\User\UserGetUseCase;
 use Illuminate\Http\JsonResponse;
 
+use function app;
+
 final class UserGetController extends Controller
 {
     public function __invoke(UserGetRequest $request, User $user): JsonResponse

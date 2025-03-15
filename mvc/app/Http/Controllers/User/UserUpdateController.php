@@ -10,6 +10,8 @@ use App\Models\User;
 use App\UseCases\User\UserUpdateUseCase;
 use Illuminate\Http\JsonResponse;
 
+use function app;
+
 final class UserUpdateController extends Controller
 {
     public function __invoke(UserUpdateRequest $request, User $user): JsonResponse

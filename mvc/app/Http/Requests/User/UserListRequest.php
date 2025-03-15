@@ -9,6 +9,9 @@ use App\Http\Requests\AuthorizeTrait;
 use App\Models\User;
 use App\Rules\Common\PositiveNaturalNumberRule;
 
+use function app;
+use function intval;
+
 final class UserListRequest extends AbstractRequest implements UserListRequestInterface
 {
     use AuthorizeTrait;

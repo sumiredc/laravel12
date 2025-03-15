@@ -11,6 +11,9 @@ use App\UseCases\Auth\SignInUseCase;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
+use function app;
+use function report;
+
 final class SignInController extends Controller
 {
     public function __invoke(SignInRequest $request): JsonResponse

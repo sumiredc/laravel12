@@ -9,6 +9,8 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
+use function strval;
+
 final class UserIDCast implements CastsAttributes
 {
     /**

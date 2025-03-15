@@ -8,6 +8,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 
+use function app;
+
 final class JsonResolver
 {
     /** @return callable(Request $request, Throwable $th) */

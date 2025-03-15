@@ -6,6 +6,10 @@ namespace App\ValueObjects;
 
 use Illuminate\Support\Facades\Hash;
 
+use function mb_substr;
+use function str_repeat;
+use function str_shuffle;
+
 final class Password
 {
     private const LENGTH = 16;

@@ -10,6 +10,8 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Facades\Validator;
 
+use function sprintf;
+
 final class PositiveNaturalNumberRule implements ValidationRule, ValidatorAwareRule
 {
     use ValidatorTrait;

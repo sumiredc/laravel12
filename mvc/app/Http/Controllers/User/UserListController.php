@@ -9,6 +9,8 @@ use App\Http\Requests\User\UserListRequest;
 use App\UseCases\User\UserListUseCase;
 use Illuminate\Http\JsonResponse;
 
+use function app;
+
 final class UserListController extends Controller
 {
     public function __invoke(UserListRequest $request): JsonResponse

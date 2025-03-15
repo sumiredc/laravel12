@@ -7,6 +7,8 @@ namespace App\Http\Requests;
 use App\Exceptions\ForbiddenException;
 use Illuminate\Support\Facades\Gate;
 
+use function intval;
+
 trait AuthorizeTrait
 {
     public function can(string $ability, array $argments)

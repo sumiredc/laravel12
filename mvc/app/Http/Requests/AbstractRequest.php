@@ -9,6 +9,8 @@ use App\Exceptions\UnauthorizedException;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
+use function is_null;
+
 abstract class AbstractRequest extends FormRequest
 {
     /**

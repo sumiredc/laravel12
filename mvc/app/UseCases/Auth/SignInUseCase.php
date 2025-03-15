@@ -12,6 +12,8 @@ use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use function is_null;
+
 final class SignInUseCase
 {
     public function __construct(

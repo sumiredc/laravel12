@@ -11,6 +11,9 @@ use App\UseCases\Auth\FirstSignInUseCase;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
+use function app;
+use function report;
+
 final class FirstSignInController extends Controller
 {
     public function __invoke(FirstSignInRequest $request): JsonResponse

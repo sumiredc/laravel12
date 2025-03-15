@@ -9,6 +9,8 @@ use App\Http\Requests\User\UserCreateRequest;
 use App\UseCases\User\UserCreateUseCase;
 use Illuminate\Http\JsonResponse;
 
+use function app;
+
 final class UserCreateController extends Controller
 {
     public function __invoke(UserCreateRequest $request): JsonResponse

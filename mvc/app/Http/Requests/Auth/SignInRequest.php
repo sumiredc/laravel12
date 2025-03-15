@@ -8,6 +8,8 @@ use App\Http\Requests\AbstractRequest;
 use App\Http\Requests\AuthorizeTrait;
 use App\Rules\Auth\CredentialStringRule;
 
+use function app;
+
 final class SignInRequest extends AbstractRequest implements SignInRequestInterface
 {
     use AuthorizeTrait;

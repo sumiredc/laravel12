@@ -13,6 +13,8 @@ use App\ValueObjects\Password;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use function is_null;
+
 final class FirstSignInUseCase
 {
     public function __construct(

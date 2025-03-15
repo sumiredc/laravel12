@@ -10,6 +10,8 @@ use App\Models\User;
 use App\UseCases\User\UserDeleteUseCase;
 use Illuminate\Http\JsonResponse;
 
+use function app;
+
 final class UserDeleteController extends Controller
 {
     public function __invoke(UserDeleteRequest $request, User $user): JsonResponse

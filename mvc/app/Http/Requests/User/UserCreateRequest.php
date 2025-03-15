@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Rules\User\UserEmailRule;
 use App\Rules\User\UserNameRule;
 
+use function app;
+
 final class UserCreateRequest extends AbstractRequest implements UserCreateRequestInterface
 {
     use AuthorizeTrait;

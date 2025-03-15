@@ -9,6 +9,8 @@ use App\Http\Requests\Auth\SignOutRequest;
 use App\UseCases\Auth\SignOutUseCase;
 use Illuminate\Http\JsonResponse;
 
+use function app;
+
 final class SignOutController extends Controller
 {
     public function __invoke(SignOutRequest $request): JsonResponse

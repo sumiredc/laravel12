@@ -8,6 +8,8 @@ use App\Http\Requests\AbstractRequest;
 use App\Rules\Auth\CredentialStringRule;
 use App\Rules\Auth\PasswordRule;
 
+use function app;
+
 final class FirstSignInRequest extends AbstractRequest implements FirstSignInRequestInterface
 {
     /**
