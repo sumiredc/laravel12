@@ -7,12 +7,13 @@ use App\Http\Requests\User\UserGetRequest;
 use App\Models\User;
 use App\UseCases\User\UserGetUseCase;
 
-describe('UserGetController', function () {
-    beforeEach(function () {
-        $this->request = new UserGetRequest;
-    });
+\beforeEach(function () {
+    $this->request = new UserGetRequest;
+});
 
-    it('response 200', function () {
+\describe('__invoke', function () {
+
+    \it('returns a response 200', function () {
         $user = new User;
 
         $mock = Mockery::mock(new class
@@ -20,11 +21,11 @@ describe('UserGetController', function () {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once();
-        app()->bind(UserGetUseCase::class, fn () => $mock);
+        \app()->bind(UserGetUseCase::class, fn () => $mock);
 
         $controller = new UserGetController;
         $result = $controller($this->request, $user);
 
-        expect($result->getStatusCode())->toBe(200);
+        \expect($result->getStatusCode())->toBe(200);
     });
 });

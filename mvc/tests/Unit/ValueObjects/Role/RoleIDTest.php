@@ -5,21 +5,24 @@ declare(strict_types=1);
 use App\Consts\Role;
 use App\ValueObjects\Role\RoleID;
 
-describe('RoleID', function () {
-    it('parse() correctly initializes from a given ULID', function (Role $role) {
+\describe('parse', function () {
+    \it('parses a Role into a RoleID', function (Role $role) {
         $result = RoleID::parse($role);
 
-        expect($result->value)->toBe($role->value);
+        \expect($result->value)->toBe($role->value);
     })
         ->with([
             'Admin role' => Role::Admin,
             'User role' => Role::User,
         ]);
 
-    it('__toString() correctly initializes from a given ULID', function (Role $role) {
+});
+
+\describe('__toString', function () {
+    \it('converts RoleID to string correctly', function (Role $role) {
         $result = RoleID::parse($role);
 
-        expect((string) $result)->toBe($role->value);
+        \expect((string) $result)->toBe($role->value);
     })
         ->with([
             'Admin role' => Role::Admin,

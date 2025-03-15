@@ -7,18 +7,19 @@ use App\Models\User;
 use App\UseCases\User\UserGetUseCase;
 use App\ValueObjects\User\UserID;
 
-describe('UserGetUseCase', function () {
-    beforeEach(function () {
-        $this->request = Mockery::mock(UserGetRequestInterface::class);
-    });
+\beforeEach(function () {
+    $this->request = Mockery::mock(UserGetRequestInterface::class);
+});
 
-    it('success to get user', function () {
+\describe('__invoke', function () {
+
+    \it('retrieves the user successfully', function () {
         $userID = UserID::make();
         $user = new User(['id' => $userID]);
 
         $useCase = new UserGetUseCase;
         $result = $useCase($this->request, $user);
 
-        expect((string) $result->resource['user']->id)->toBe((string) $userID);
+        \expect((string) $result->resource['user']->id)->toBe((string) $userID);
     });
 });

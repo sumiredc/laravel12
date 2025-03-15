@@ -9,14 +9,15 @@ use App\Repositories\TokenRepositoryInterface;
 use App\UseCases\Auth\SignOutUseCase;
 use Illuminate\Support\Facades\DB;
 
-describe('SignOutUseCase', function () {
-    beforeEach(function () {
-        $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
-        $this->request = Mockery::mock(SignOutRequestInterface::class);
-        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
-    });
+\beforeEach(function () {
+    $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
+    $this->request = Mockery::mock(SignOutRequestInterface::class);
+    DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
+});
 
-    it('success to logout user, not exception', function () {
+\describe('__invoke', function () {
+
+    \it('logs out user successfully without exception', function () {
         $useCase = new SignOutUseCase($this->tokenRepository);
         $user = new User;
 
@@ -26,7 +27,7 @@ describe('SignOutUseCase', function () {
         $useCase($this->request);
     });
 
-    it('Fail to get auth user', function () {
+    \it('throws NotFoundException when user retrieval fails', function () {
         $useCase = new SignOutUseCase($this->tokenRepository);
         $this->request->shouldReceive('userOrFail')->once()->andThrow(NotFoundException::class);
         DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());

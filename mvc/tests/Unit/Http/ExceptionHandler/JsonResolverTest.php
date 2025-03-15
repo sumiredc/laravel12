@@ -6,52 +6,49 @@ use App\Http\ExceptionHandler\ExceptionMapper;
 use App\Http\ExceptionHandler\JsonResolver;
 use Illuminate\Http\Request;
 
-describe('shouldReturnJsonResponse', function () {
-    beforeEach(function () {
-        $this->request = Request::create('http://xxx.xxx');
-        $this->resolver = new JsonResolver;
-    });
+\beforeEach(function () {
+    $this->request = Request::create('http://xxx.xxx');
+    $this->resolver = new JsonResolver;
+});
 
-    it('enable json with Request header in Content-type: application/json', function () {
+\describe('shouldReturnJsonResponse', function () {
+
+    \it('returns true when Content-Type header is application/json', function () {
         $this->request->headers->set('CONTENT_TYPE', 'application/json');
 
         $func = $this->resolver->shouldReturnJsonResponse();
         $result = $func($this->request, new Exception);
 
-        expect($result)->toBeTrue();
+        \expect($result)->toBeTrue();
     });
 
-    it('enable json with Request header in Accept: application/json', function () {
+    \it('returns true when Accept header is application/json', function () {
         $this->request->headers->set('Accept', 'application/json');
 
         $func = $this->resolver->shouldReturnJsonResponse();
         $result = $func($this->request, new Exception);
 
-        expect($result)->toBeTrue();
+        \expect($result)->toBeTrue();
     });
 
-    it('desable json', function () {
+    \it('returns false when no JSON-related headers are present', function () {
         $func = $this->resolver->shouldReturnJsonResponse();
         $result = $func($this->request, new Exception);
 
-        expect($result)->toBeFalse();
+        \expect($result)->toBeFalse();
     });
 });
 
-describe('createJsonExceptionRenderer', function () {
-    beforeEach(function () {
-        $this->request = Request::create('http://xxx.xxx');
-        $this->resolver = new JsonResolver;
-    });
+\describe('createJsonExceptionRenderer', function () {
 
-    it('dont allow JsonResponse', function () {
+    \it('returns null when JSON response is not allowed', function () {
         $func = $this->resolver->createJsonExceptionRenderer();
         $result = $func(new Exception, $this->request);
 
-        expect($result)->toBeNull();
+        \expect($result)->toBeNull();
     });
 
-    it('return to JsonResponse', function () {
+    \it('returns a JsonResponse when exception mapping is provided', function () {
         interface MapplerInterface
         {
             public function hiddenPrivateException();
@@ -75,13 +72,13 @@ describe('createJsonExceptionRenderer', function () {
         $mock->shouldReceive('mapForNotFound')->with($ex, $this->request)->once()->andReturn($ex);
         $mock->shouldReceive('exceptionToJsonResource')->with($ex, $this->request)->once()->andReturn($resource);
         $mock->shouldReceive('getStatusCode')->with($ex)->once()->andReturn($status);
-        app()->bind(ExceptionMapper::class, fn () => $mock);
+        \app()->bind(ExceptionMapper::class, fn () => $mock);
         $this->request->headers->set('CONTENT_TYPE', 'application/json');
 
         $func = $this->resolver->createJsonExceptionRenderer();
         $result = $func($ex, $this->request);
 
-        expect($result->getStatusCode())->toBe($status);
-        expect($result->getData())->toBe($resource);
+        \expect($result->getStatusCode())->toBe($status);
+        \expect($result->getData())->toBe($resource);
     });
 });

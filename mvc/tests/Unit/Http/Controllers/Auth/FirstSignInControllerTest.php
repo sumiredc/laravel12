@@ -10,12 +10,13 @@ use App\Models\User;
 use App\UseCases\Auth\FirstSignInUseCase;
 use Illuminate\Support\Facades\Log;
 
-describe('FirstSignInController', function () {
-    beforeEach(function () {
-        $this->request = new FirstSignInRequest;
-    });
+\beforeEach(function () {
+    $this->request = new FirstSignInRequest;
+});
 
-    it('response 200', function () {
+\describe('__invoke', function () {
+
+    \it('returns a response 200', function () {
         $resource = new UserResource(new User);
 
         $mock = Mockery::mock(new class
@@ -23,15 +24,15 @@ describe('FirstSignInController', function () {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once()->andReturn($resource);
-        app()->bind(FirstSignInUseCase::class, fn () => $mock);
+        \app()->bind(FirstSignInUseCase::class, fn () => $mock);
 
         $controller = new FirstSignInController;
         $result = $controller($this->request);
 
-        expect($result->getStatusCode())->toBe(200);
+        \expect($result->getStatusCode())->toBe(200);
     });
 
-    it('throws InvalidCredentialException', function () {
+    \it('throws InvalidCredentialException when credentials are invalid', function () {
         Log::shouldReceive('error')->never();
 
         $mock = Mockery::mock(new class
@@ -39,14 +40,14 @@ describe('FirstSignInController', function () {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once()->andThrow(InvalidCredentialException::class);
-        app()->bind(FirstSignInUseCase::class, fn () => $mock);
+        \app()->bind(FirstSignInUseCase::class, fn () => $mock);
 
         $controller = new FirstSignInController;
         $controller($this->request);
     })
         ->throws(InvalidCredentialException::class);
 
-    it('throws InvalidCredentialException and call report', function () {
+    \it('logs an error and throws InvalidCredentialException when an exception occurs', function () {
         Log::shouldReceive('error')->once();
 
         $mock = Mockery::mock(new class
@@ -54,7 +55,7 @@ describe('FirstSignInController', function () {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once()->andThrow(Exception::class);
-        app()->bind(FirstSignInUseCase::class, fn () => $mock);
+        \app()->bind(FirstSignInUseCase::class, fn () => $mock);
 
         $controller = new FirstSignInController;
         $controller($this->request);

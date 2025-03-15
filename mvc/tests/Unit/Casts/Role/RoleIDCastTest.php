@@ -7,50 +7,49 @@ use App\Consts\Role;
 use App\ValueObjects\Role\RoleID;
 use Illuminate\Database\Eloquent\Model;
 
-describe('RoleIDCast::get()', function () {
-    $cast = new RoleIDCast;
-    $model = new class extends Model {};
+\beforeEach(function () {
+    $this->cast = new RoleIDCast;
+    $this->model = new class extends Model {};
+});
 
-    it('convert string to RoleID', function () use ($cast, $model) {
-        $result = $cast->get($model, 'key', Role::User->value, []);
+\describe('get', function () {
 
-        expect($result->value)->toBe(Role::User->value);
+    \it('converts a string to RoleID', function () {
+        $result = $this->cast->get($this->model, 'key', Role::User->value, []);
+
+        \expect($result->value)->toBe(Role::User->value);
     });
 
-    it('failed to convert of ValueError', function () use ($cast, $model) {
-        $cast->get($model, 'key', '01JNVKWDF41STA7P2CEB974YRX', []);
+    \it('throws ValueError when conversion fails', function () {
+        $this->cast->get($this->model, 'key', '01JNVKWDF41STA7P2CEB974YRX', []);
     })
         ->throws(ValueError::class);
 
-    it('failed to convert of TypeError', function () use ($cast, $model) {
-        $cast->get($model, 'key', 99999, []);
+    \it('throws TypeError when conversion fails', function () {
+        $this->cast->get($this->model, 'key', 99999, []);
     })
         ->throws(TypeError::class);
 });
 
-describe('RoleIDCast::set()', function () {
-    $cast = new RoleIDCast;
-    $model = new class extends Model {};
+\describe('set', function () {
 
-    it('convert RoleID to string', function () use ($cast, $model) {
-        $result = $cast->set($model, 'key', RoleID::parse(Role::User), []);
+    \it('converts RoleID to a string', function () {
+        $result = $this->cast->set($this->model, 'key', RoleID::parse(Role::User), []);
 
-        expect($result)->toBe(Role::User->value);
+        \expect($result)->toBe(Role::User->value);
     });
 
-    it('failed to convert of InvalidArgumentException', function () use ($cast, $model) {
-        $cast->set($model, 'key', '01JNVKWDF41STA7P2CEB974YRX', []);
+    \it('throws InvalidArgumentException when conversion fails', function () {
+        $this->cast->set($this->model, 'key', '01JNVKWDF41STA7P2CEB974YRX', []);
     })
         ->throws(InvalidArgumentException::class);
 });
 
-describe('RoleIDCast::serialize()', function () {
-    $cast = new RoleIDCast;
-    $model = new class extends Model {};
+\describe('serialize', function () {
 
-    it('serialize RoleID to string', function () use ($cast, $model) {
-        $result = $cast->serialize($model, 'key', RoleID::parse(Role::Admin), []);
+    \it('serializes RoleID to a string', function () {
+        $result = $this->cast->serialize($this->model, 'key', RoleID::parse(Role::Admin), []);
 
-        expect($result)->toBe(Role::Admin->value);
+        \expect($result)->toBe(Role::Admin->value);
     });
 });

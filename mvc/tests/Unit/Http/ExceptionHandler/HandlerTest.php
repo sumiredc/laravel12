@@ -6,12 +6,13 @@ use App\Http\ExceptionHandler\Handler;
 use Illuminate\Foundation\Configuration\Exceptions;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
-describe('HandlerTest', function () {
-    beforeEach(function () {
-        $this->mock = Mockery::mock(Exceptions::class);
-    });
+\beforeEach(function () {
+    $this->mock = Mockery::mock(Exceptions::class);
+});
 
-    it('dont report Exceptions', function () {
+\describe('report', function () {
+
+    \it('does not report specified exceptions', function () {
         $this->mock->shouldReceive('dontReport')
             ->with([OAuthServerException::class])->once();
 
@@ -19,7 +20,10 @@ describe('HandlerTest', function () {
         $handler->report();
     });
 
-    it('createJsonResponse', function () {
+});
+
+\describe('createJsonResponse', function () {
+    \it('creates a JSON response correctly', function () {
         $this->mock->shouldReceive('shouldRenderJsonWhen')->once()->andReturn($this->mock);
         $this->mock->shouldReceive('render')->once()->andReturn($this->mock);
 

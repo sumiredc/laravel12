@@ -6,36 +6,36 @@ use App\Rules\User\UserEmailRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\PresenceVerifierInterface;
 
-describe('UserEmailRule', function () {
-    it('allows valid email', function ($v) {
+\describe('validate', function () {
+    \it('accepts valid email addresses', function ($v) {
         $rule = new UserEmailRule;
         $validator = Validator::make(
             data: ['v' => $v],
             rules: ['v' => $rule]
         );
 
-        expect($validator->passes())->toBeTrue();
+        \expect($validator->passes())->toBeTrue();
     })
         ->with([
-            'valid email' => 'abc@xxx.xxx',
-            'valid max-length email' => sprintf('%s@xxx.xxx', str_repeat('a', 55)),
+            'simple valid email' => 'abc@xxx.xxx',
+            'maximum max-length email' => \sprintf('%s@xxx.xxx', \str_repeat('a', 55)),
         ]);
 
-    it('rejects invalid email', function ($v) {
+    \it('rejects invalid values', function ($v) {
         $rule = new UserEmailRule;
         $validator = Validator::make(
             data: ['v' => $v],
             rules: ['v' => $rule]
         );
 
-        expect($validator->fails())->toBeTrue();
+        \expect($validator->fails())->toBeTrue();
     })
         ->with([
-            'invalid email' => 'aaa#xxx.xxx',
-            'valid over-length(101) email' => sprintf('%s@xxxxx.xxx', str_repeat('a', 91)),
+            'email with invalid character' => 'aaa#xxx.xxx',
+            'email exceeding maximum length' => \sprintf('%s@xxxxx.xxx', \str_repeat('a', 91)),
         ]);
 
-    it('rejects invalid duplicate email', function () {
+    \it('rejects duplicate email addresses', function () {
         $presenceVerifierMock = Mockery::mock(PresenceVerifierInterface::class);
         $presenceVerifierMock->shouldReceive('getCount')
             ->andReturn(1);
@@ -49,6 +49,6 @@ describe('UserEmailRule', function () {
             rules: ['v' => $rule]
         );
 
-        expect($validator->fails())->toBeTrue();
+        \expect($validator->fails())->toBeTrue();
     });
 });

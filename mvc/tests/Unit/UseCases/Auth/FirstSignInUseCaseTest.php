@@ -11,15 +11,15 @@ use App\UseCases\Auth\FirstSignInUseCase;
 use App\ValueObjects\User\UserID;
 use Illuminate\Support\Facades\DB;
 
-describe('FirstSignInUseCase', function () {
-    beforeEach(function () {
-        $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
-        $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
-        $this->request = Mockery::mock(FirstSignInRequestInterface::class);
-        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
-    });
+\beforeEach(function () {
+    $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
+    $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
+    $this->request = Mockery::mock(FirstSignInRequestInterface::class);
+    DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
+});
 
-    it('success to first login user', function () {
+\describe('__invoke', function () {
+    \it('logs in an unverified user successfully', function () {
         $useCase = new FirstSignInUseCase($this->userRepository, $this->tokenRepository);
         $userID = UserID::make();
         $user = (new User)->setRawAttributes([
@@ -37,11 +37,11 @@ describe('FirstSignInUseCase', function () {
         $this->tokenRepository->shouldReceive('createUserAuthorizationToken')->once()->andReturn($token);
 
         $result = $useCase($this->request);
-        expect((string) $result->resource['user']->id)->toBe((string) $userID);
-        expect($result->resource['token'])->toBe($token);
+        \expect((string) $result->resource['user']->id)->toBe((string) $userID);
+        \expect($result->resource['token'])->toBe($token);
     });
 
-    it('fail to not found user', function () {
+    \it('throws exception when user is not found', function () {
         $useCase = new FirstSignInUseCase($this->userRepository, $this->tokenRepository);
         $this->userRepository->shouldReceive('getUnverifiedByEmail')->once()->andReturnNull();
         $this->request->shouldReceive('loginID')->andReturn('login-id');
@@ -50,7 +50,7 @@ describe('FirstSignInUseCase', function () {
     })
         ->throws(InvalidCredentialException::class);
 
-    it('fail to invalid credentials', function () {
+    \it('throws exception when password is incorrect', function () {
         $useCase = new FirstSignInUseCase($this->userRepository, $this->tokenRepository);
         $userID = UserID::make();
         $user = (new User)->setRawAttributes([

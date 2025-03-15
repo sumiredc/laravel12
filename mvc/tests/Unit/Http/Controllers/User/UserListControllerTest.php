@@ -8,24 +8,25 @@ use App\Http\Resources\User\UserListResource;
 use App\Models\User;
 use App\UseCases\User\UserListUseCase;
 
-describe('UserListController', function () {
-    beforeEach(function () {
-        $this->request = new UserListRequest;
-    });
+\beforeEach(function () {
+    $this->request = new UserListRequest;
+});
 
-    it('response 200', function () {
-        $resource = new UserListResource(collect(new User));
+\describe('__invoke', function () {
+
+    \it('returns a response 200', function () {
+        $resource = new UserListResource(\collect(new User));
 
         $mock = Mockery::mock(new class
         {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once()->andReturn($resource);
-        app()->bind(UserListUseCase::class, fn () => $mock);
+        \app()->bind(UserListUseCase::class, fn () => $mock);
 
         $controller = new UserListController;
         $result = $controller($this->request);
 
-        expect($result->getStatusCode())->toBe(200);
+        \expect($result->getStatusCode())->toBe(200);
     });
 });

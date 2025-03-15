@@ -7,12 +7,12 @@ use App\Http\Requests\User\UserDeleteRequest;
 use App\Models\User;
 use App\UseCases\User\UserDeleteUseCase;
 
-describe('UserDeleteController', function () {
-    beforeEach(function () {
-        $this->request = new UserDeleteRequest;
-    });
+\beforeEach(function () {
+    $this->request = new UserDeleteRequest;
+});
+\describe('__invoke', function () {
 
-    it('response 204', function () {
+    \it('returns a response 204', function () {
         $user = new User;
 
         $mock = Mockery::mock(new class
@@ -20,11 +20,11 @@ describe('UserDeleteController', function () {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once();
-        app()->bind(UserDeleteUseCase::class, fn () => $mock);
+        \app()->bind(UserDeleteUseCase::class, fn () => $mock);
 
         $controller = new UserDeleteController;
         $result = $controller($this->request, $user);
 
-        expect($result->getStatusCode())->toBe(204);
+        \expect($result->getStatusCode())->toBe(204);
     });
 });

@@ -7,13 +7,14 @@ use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use App\UseCases\User\UserDeleteUseCase;
 
-describe('UserDeleteUseCase', function () {
-    beforeEach(function () {
-        $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
-        $this->request = Mockery::mock(UserDeleteRequestInterface::class);
-    });
+\beforeEach(function () {
+    $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
+    $this->request = Mockery::mock(UserDeleteRequestInterface::class);
+});
 
-    it('success to delete user', function () {
+\describe('__invoke', function () {
+
+    \it('deletes the user successfully', function () {
         $user = new User;
 
         $this->userRepository->shouldReceive('delete')->once();

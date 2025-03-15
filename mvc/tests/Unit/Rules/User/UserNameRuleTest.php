@@ -4,31 +4,31 @@ declare(strict_types=1);
 
 use App\Rules\User\UserNameRule;
 
-describe('UserNameRule', function () {
-    it('allows valid name', function ($v) {
+\describe('validate', function () {
+    \it('accepts valid names', function ($v) {
         $rule = new UserNameRule;
         $validator = Validator::make(
             data: ['v' => $v],
             rules: ['v' => $rule]
         );
 
-        expect($validator->passes())->toBeTrue();
+        \expect($validator->passes())->toBeTrue();
     })
         ->with([
             'valid name' => 'Jone Due',
-            'valid max-length name' => str_repeat('a', 100),
+            'valid max-length name' => \str_repeat('a', 100),
         ]);
 
-    it('rejects invalid email', function ($v) {
+    \it('rejects invalid values', function ($v) {
         $rule = new UserNameRule;
         $validator = Validator::make(
             data: ['v' => $v],
             rules: ['v' => $rule]
         );
 
-        expect($validator->fails())->toBeTrue();
+        \expect($validator->fails())->toBeTrue();
     })
         ->with([
-            'valid over-length(101) name' => str_repeat('a', 101),
+            'valid over-length(101) name' => \str_repeat('a', 101),
         ]);
 });

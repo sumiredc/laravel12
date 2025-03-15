@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 use App\Http\Resources\Error\UnprocessableContentResource;
 
-describe('UnprocessableContentResourceTest', function () {
-    it('success to initialize', function () {
+\describe('__construct', function () {
+    \it('successfully initializes with message and errors', function () {
         $message = 'error message';
         $errors = ['error'];
         $result = new UnprocessableContentResource($message, $errors);
 
-        expect($result->resource)->toBe(['message' => $message, 'errors' => $errors]);
+        \expect($result->toArray(\request()))->toBe(['message' => $message, 'errors' => $errors]);
     });
 });

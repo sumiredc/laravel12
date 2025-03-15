@@ -6,12 +6,13 @@ use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Error\NotFoundController;
 use Illuminate\Http\Request;
 
-describe('NotFoundController', function () {
-    beforeEach(function () {
-        $this->request = Request::create('http://dummy.xxx');
-    });
+\beforeEach(function () {
+    $this->request = Request::create('http://dummy.xxx');
+});
 
-    it('throws NotFoundException', function () {
+\describe('NotFoundController', function () {
+
+    \it('logs a warning and throws NotFoundException when a request is not found', function () {
         Log::shouldReceive('warning')->once();
 
         $controller = new NotFoundController;

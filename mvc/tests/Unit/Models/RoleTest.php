@@ -6,11 +6,11 @@ use App\Consts\Role as ConstsRole;
 use App\Models\Role;
 use App\ValueObjects\Role\RoleID;
 
-describe('Role model', function () {
-    it('success to casts', function () {
+\describe('casts', function () {
+    \it('successfully casts id', function () {
         $roleID = RoleID::parse(ConstsRole::Admin);
         $model = new Role(['id' => $roleID]);
 
-        expect((string) $model->id)->toBe((string) $roleID);
+        \expect((string) $model->id)->toBe((string) $roleID);
     });
 });

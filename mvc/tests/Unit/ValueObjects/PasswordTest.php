@@ -5,38 +5,38 @@ declare(strict_types=1);
 use App\ValueObjects\Password;
 use Illuminate\Support\Facades\Hash;
 
-describe('Password::make()', function () {
-    it('including to character of upper case', function () {
+\describe('make', function () {
+    \it('includes at least one uppercase letter', function () {
         $result = Password::make();
         $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        expect(strpbrk($result->plain, $upper) !== false)->toBeTrue();
+        \expect(\strpbrk($result->plain, $upper) !== false)->toBeTrue();
     });
 
-    it('including to character of lower case', function () {
+    \it('includes at least one lowercase letter', function () {
         $result = Password::make();
         $lower = 'abcdefghijklmnopqrstuvwxyz';
-        expect(strpbrk($result->plain, $lower) !== false)->toBeTrue();
+        \expect(\strpbrk($result->plain, $lower) !== false)->toBeTrue();
     });
 
-    it('including to character of symbol', function () {
+    \it('includes at least one symbol', function () {
         $result = Password::make();
         $symbol = '!@#$%^&*()_+{}[]';
-        expect(strpbrk($result->plain, $symbol) !== false)->toBeTrue();
+        \expect(\strpbrk($result->plain, $symbol) !== false)->toBeTrue();
     });
 
-    it('including to character of number', function () {
+    \it('includes at least one number', function () {
         $result = Password::make();
         $numbers = '0123456789';
-        expect(strpbrk($result->plain, $numbers) !== false)->toBeTrue();
+        \expect(\strpbrk($result->plain, $numbers) !== false)->toBeTrue();
     });
 
-    it('match to length', function () {
+    \it('has the correct length', function () {
         $result = Password::make();
-        expect(mb_strlen($result->plain))->toBe(16);
+        \expect(\mb_strlen($result->plain))->toBe(16);
     });
 
-    it('match hash and plain', function () {
+    \it('hash matches the plain text password', function () {
         $result = Password::make();
-        expect(Hash::check($result->plain, $result->hashed))->toBeTrue();
+        \expect(Hash::check($result->plain, $result->hashed))->toBeTrue();
     });
 });

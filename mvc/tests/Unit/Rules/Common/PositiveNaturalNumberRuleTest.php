@@ -5,32 +5,33 @@ declare(strict_types=1);
 use App\Rules\Common\PositiveNaturalNumberRule;
 use Illuminate\Support\Facades\Validator;
 
-describe('PositiveNaturalNumberRule', function () {
-    it('allows valid number', function ($v) {
+\describe('validate', function () {
+    \it('accepts valid positive natural numbers', function ($v) {
         $rule = new PositiveNaturalNumberRule;
         $validator = Validator::make(
             data: ['v' => $v],
             rules: ['v' => $rule]
         );
 
-        expect($validator->passes())->toBeTrue();
+        \expect($validator->passes())->toBeTrue();
     })
         ->with([
-            'zero' => 0,
-            'php int max' => PHP_INT_MAX,
+            'zero (lower bound)' => 0,
+            'maximum integer value' => PHP_INT_MAX,
         ]);
 
-    it('rejects invalid number', function ($v) {
+    \it('rejects invalid values', function ($v) {
         $rule = new PositiveNaturalNumberRule;
         $validator = Validator::make(
             data: ['v' => $v],
             rules: ['v' => $rule]
         );
 
-        expect($validator->fails())->toBeTrue();
+        \expect($validator->fails())->toBeTrue();
     })
         ->with([
-            'negative number' => -1,
-            'over number' => PHP_INT_MAX + 1,
+            'negative integer' => -1,
+            'integer exceeding maximum' => PHP_INT_MAX + 1,
+            'non-integer value' => 1.5,
         ]);
 });

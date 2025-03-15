@@ -6,30 +6,30 @@ use App\Consts\Role;
 use App\Models\User;
 use App\ValueObjects\Role\RoleID;
 
-describe('Role::isAdmin()', function () {
-    it('valid admin role', function () {
+\describe('isAdmin', function () {
+    \it('returns true for an admin role', function () {
         $user = new User(['role_id' => RoleID::parse(Role::Admin)]);
 
-        expect(Role::isAdmin($user))->toBeTrue();
+        \expect(Role::isAdmin($user))->toBeTrue();
     });
 
-    it('invalid admin role', function () {
+    \it('returns false for a non-admin role', function () {
         $user = new User(['role_id' => RoleID::parse(Role::User)]);
 
-        expect(Role::isAdmin($user))->toBeFalse();
+        \expect(Role::isAdmin($user))->toBeFalse();
     });
 });
 
-describe('Role::isUser()', function () {
-    it('valid user role', function () {
+\describe('isUser', function () {
+    \it('returns true for a user role', function () {
         $user = new User(['role_id' => RoleID::parse(Role::User)]);
 
-        expect(Role::isUser($user))->toBeTrue();
+        \expect(Role::isUser($user))->toBeTrue();
     });
 
-    it('invalid user role', function () {
+    \it('returns false for a non-user role', function () {
         $user = new User(['role_id' => RoleID::parse(Role::Admin)]);
 
-        expect(Role::isUser($user))->toBeFalse();
+        \expect(Role::isUser($user))->toBeFalse();
     });
 });

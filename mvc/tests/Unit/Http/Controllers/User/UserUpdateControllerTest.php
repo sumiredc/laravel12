@@ -7,12 +7,13 @@ use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use App\UseCases\User\UserUpdateUseCase;
 
-describe('UserUpdateController', function () {
-    beforeEach(function () {
-        $this->request = new UserUpdateRequest;
-    });
+\beforeEach(function () {
+    $this->request = new UserUpdateRequest;
+});
 
-    it('response 200', function () {
+\describe('invoke', function () {
+
+    \it('returns a response 200', function () {
         $user = new User;
 
         $mock = Mockery::mock(new class
@@ -20,11 +21,11 @@ describe('UserUpdateController', function () {
             public function __invoke() {}
         });
         $mock->shouldReceive('__invoke')->once();
-        app()->bind(UserUpdateUseCase::class, fn () => $mock);
+        \app()->bind(UserUpdateUseCase::class, fn () => $mock);
 
         $controller = new UserUpdateController;
         $result = $controller($this->request, $user);
 
-        expect($result->getStatusCode())->toBe(200);
+        \expect($result->getStatusCode())->toBe(200);
     });
 });

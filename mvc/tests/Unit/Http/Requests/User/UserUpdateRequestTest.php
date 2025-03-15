@@ -11,22 +11,23 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Validator as ValidationValidator;
 
-describe('UserUpdateRequestTest', function () {
-    beforeEach(function () {
-        $dummyRule = function () {};
-        app()->bind(UserNameRule::class, $dummyRule);
-        app()->bind(UserEmailRule::class, $dummyRule);
-    });
+\beforeEach(function () {
+    $dummyRule = function () {};
+    \app()->bind(UserNameRule::class, $dummyRule);
+    \app()->bind(UserEmailRule::class, $dummyRule);
+});
 
-    it('passes authorize', function () {
+\describe('authorize', function () {
+
+    \it('allows authorization when Gate permits', function () {
         Gate::partialMock()->shouldReceive('inspect')->andReturn(new Response(true));
         $request = new UserUpdateRequest;
         $result = $request->authorize();
 
-        expect($result)->toBeTrue();
+        \expect($result)->toBeTrue();
     });
 
-    it('denied authorize', function () {
+    \it('throws ForbiddenException when Gate denies', function () {
 
         Gate::partialMock()->shouldReceive('inspect')->andReturn(new Response(false));
         $request = new UserUpdateRequest;
@@ -35,7 +36,11 @@ describe('UserUpdateRequestTest', function () {
     })
         ->throws(ForbiddenException::class);
 
-    it('validates successfully', function () {
+});
+
+\describe('rules', function () {
+
+    \it('passes validation with valid data', function () {
         $data = [
             'name' => 'validName',
             'email' => 'validEmail',
@@ -46,24 +51,27 @@ describe('UserUpdateRequestTest', function () {
 
         $validator = Validator::make($data, $rules);
 
-        expect($validator->passes())->toBeTrue();
+        \expect($validator->passes())->toBeTrue();
     });
 
-    it('fails validation when fields are missing', function () {
-        $data = [];
+    \it('fails validation when required fields are missing', function () {
+        $invalidData = [];
 
         $request = new UserUpdateRequest;
         $rules = $request->rules();
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($invalidData, $rules);
 
-        expect($validator->fails())->toBeTrue();
-        expect($validator->errors()->has('name'))->toBeTrue();
-        expect($validator->errors()->has('email'))->toBeTrue();
+        \expect($validator->fails())->toBeTrue();
+        \expect($validator->errors()->has('name'))->toBeTrue();
+        \expect($validator->errors()->has('email'))->toBeTrue();
 
     });
+});
 
-    it('retrieves validated values', function () {
+\describe('accessor name, email', function () {
+
+    \it('retrieves validated input values correctly', function () {
         $data = [
             'name' => 'validName',
             'email' => 'validEmail',
@@ -74,7 +82,7 @@ describe('UserUpdateRequestTest', function () {
         $request = UserUpdateRequest::create('/', 'POST', $data);
         $request->setValidator($mock);
 
-        expect($request->name())->toBe('validName');
-        expect($request->email())->toBe('validEmail');
+        \expect($request->name())->toBe('validName');
+        \expect($request->email())->toBe('validEmail');
     });
 });

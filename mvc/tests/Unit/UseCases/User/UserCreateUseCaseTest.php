@@ -9,15 +9,16 @@ use App\Repositories\UserRepositoryInterface;
 use App\UseCases\User\UserCreateUseCase;
 use Illuminate\Support\Facades\Mail;
 
-describe('UserCreateUseCase', function () {
-    beforeEach(function () {
-        $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
-        $this->request = Mockery::mock(UserCreateRequestInterface::class);
-        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
-        Mail::fake();
-    });
+\beforeEach(function () {
+    $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
+    $this->request = Mockery::mock(UserCreateRequestInterface::class);
+    DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
+    Mail::fake();
+});
 
-    it('success to create user', function () {
+\describe('__invoke', function () {
+
+    \it('creates a new user successfully and sends an initial password email', function () {
         $name = 'test name';
         $email = 'test@xxx.xxx';
         $user = new User(['name' => $name, 'email' => $email]);
@@ -28,8 +29,8 @@ describe('UserCreateUseCase', function () {
         $useCase = new UserCreateUseCase($this->userRepository);
         $result = $useCase($this->request);
 
-        expect($result->resource['user']->name)->toBe($name);
-        expect($result->resource['user']->email)->toBe($email);
+        \expect($result->resource['user']->name)->toBe($name);
+        \expect($result->resource['user']->email)->toBe($email);
         Mail::assertSent(InitialPasswordMail::class, 1);
     });
 });

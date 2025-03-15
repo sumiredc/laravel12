@@ -10,21 +10,22 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Validator as ValidationValidator;
 
-describe('UserListRequestTest', function () {
-    beforeEach(function () {
-        $dummyRule = function () {};
-        app()->bind(PositiveNaturalNumberRule::class, $dummyRule);
-    });
+\beforeEach(function () {
+    $dummyRule = function () {};
+    \app()->bind(PositiveNaturalNumberRule::class, $dummyRule);
+});
 
-    it('passes authorize', function () {
+\describe('authorize', function () {
+
+    \it('allows authorization when Gate permits', function () {
         Gate::partialMock()->shouldReceive('inspect')->andReturn(new Response(true));
         $request = new UserListRequest;
         $result = $request->authorize();
 
-        expect($result)->toBeTrue();
+        \expect($result)->toBeTrue();
     });
 
-    it('denied authorize', function () {
+    \it('throws ForbiddenException when Gate denies', function () {
 
         Gate::partialMock()->shouldReceive('inspect')->andReturn(new Response(false));
         $request = new UserListRequest;
@@ -33,7 +34,10 @@ describe('UserListRequestTest', function () {
     })
         ->throws(ForbiddenException::class);
 
-    it('validates successfully', function () {
+});
+
+\describe('rules', function () {
+    \it('passes validation with valid data', function () {
         $data = [
             'offset' => 1,
             'limit' => 100,
@@ -46,31 +50,33 @@ describe('UserListRequestTest', function () {
 
         $validator = Validator::make($data, $rules);
 
-        expect($validator->passes())->toBeTrue();
+        \expect($validator->passes())->toBeTrue();
     });
 
-    it('fails validation when fields are missing', function () {
-        $data = [
+    \it('fails validation with invalid values', function () {
+        $invalidData = [
             'offset' => 'aaa',
             'limit' => 101,
-            'name' => str_repeat('a', 51),
-            'email' => str_repeat('a', 51),
+            'name' => \str_repeat('a', 51),
+            'email' => \str_repeat('a', 51),
         ];
 
         $request = new UserListRequest;
         $rules = $request->rules();
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($invalidData, $rules);
 
-        expect($validator->fails())->toBeTrue();
-        expect($validator->errors()->has('offset'))->toBeTrue();
-        expect($validator->errors()->has('limit'))->toBeTrue();
-        expect($validator->errors()->has('name'))->toBeTrue();
-        expect($validator->errors()->has('email'))->toBeTrue();
+        \expect($validator->fails())->toBeTrue();
+        \expect($validator->errors()->has('offset'))->toBeTrue();
+        \expect($validator->errors()->has('limit'))->toBeTrue();
+        \expect($validator->errors()->has('name'))->toBeTrue();
+        \expect($validator->errors()->has('email'))->toBeTrue();
 
     });
+});
 
-    it('retrieves validated values', function () {
+\describe('accessor offset, limit, name, email', function () {
+    \it('retrieves validated input values correctly', function () {
         $data = [
             'offset' => 1,
             'limit' => 100,
@@ -83,9 +89,9 @@ describe('UserListRequestTest', function () {
         $request = UserListRequest::create('/', 'GET', $data);
         $request->setValidator($mock);
 
-        expect($request->offset())->toBe(1);
-        expect($request->limit())->toBe(100);
-        expect($request->name())->toBe('validName');
-        expect($request->email())->toBe('validEmail');
+        \expect($request->offset())->toBe(1);
+        \expect($request->limit())->toBe(100);
+        \expect($request->name())->toBe('validName');
+        \expect($request->email())->toBe('validEmail');
     });
 });
