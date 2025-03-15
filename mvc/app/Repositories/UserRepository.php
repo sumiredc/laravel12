@@ -38,7 +38,7 @@ final class UserRepository implements UserRepositoryInterface
         ]);
     }
 
-    public function get(int $userID): ?User
+    public function get(UserID $userID): ?User
     {
         return User::find($userID);
     }

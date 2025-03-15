@@ -24,7 +24,7 @@ interface UserRepositoryInterface
         string $hashedPassword
     ): User;
 
-    public function get(int $userID): ?User;
+    public function get(UserID $userID): ?User;
 
     public function getByEmail(string $email): ?User;
 
