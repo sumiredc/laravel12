@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http;
+namespace App\Http\ExceptionHandler;
 
 use App\Exceptions\NotFoundException;
 use App\Exceptions\ShouldntReportException;
@@ -12,18 +12,19 @@ use App\Http\Resources\Error\UnprocessableContentResource;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
-final class ErrorHandler
+use function intval;
+use function method_exists;
+use function property_exists;
+
+final class ExceptionMapper
 {
     /**
      * An Exception class that does not disclose error messages.
@@ -34,44 +35,10 @@ final class ErrorHandler
         QueryException::class => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
     ];
 
-    public function report(Exceptions $exceptions): void
-    {
-        $exceptions->dontReport([
-            OAuthServerException::class,
-        ]);
-    }
-
-    /**
-     * @throws HttpResponseException
-     */
-    public function jsonResponse(Exceptions $exceptions): void
-    {
-        $exceptions->shouldRenderJsonWhen(static function (Request $request, Throwable $th): bool {
-            if ($request->isJson()) {
-                return true;
-            }
-
-            return $request->expectsJson();
-        })
-            ->render(function (Throwable $th, Request $request): ?JsonResponse {
-                if (!$request->isJson()) {
-                    return null;
-                }
-
-                $th = $this->hiddenPrivateException($th);
-                $th = $this->mappingForAuthorization($th);
-                $th = $this->mappingForNotFound($th, $request);
-                $resource = $this->exceptionToJsonResource($th, $request);
-                $statusCode = $this->statusCodeByException($th);
-
-                return new JsonResponse($resource, $statusCode);
-            });
-    }
-
     /**
      * NOTE: Overwrite for default message.
      */
-    private function mappingForAuthorization(Throwable $th)
+    public function mapForAuthorization(Throwable $th)
     {
         if ($th instanceof AuthenticationException) {
             return new UnauthorizedException;
@@ -83,7 +50,7 @@ final class ErrorHandler
     /**
      * NOTE: Overwrite for default message.
      */
-    private function mappingForNotFound(Throwable $th, Request $request): Throwable
+    public function mapForNotFound(Throwable $th, Request $request): Throwable
     {
         if (
             $th instanceof NotFoundHttpException
@@ -99,19 +66,19 @@ final class ErrorHandler
     /**
      * NOTE: Replace it with ShouldntReport to prevent error logs from being output twice.
      */
-    private function hiddenPrivateException(Throwable $th): Throwable
+    public function hiddenPrivateException(Throwable $th): Throwable
     {
         $statusCode = $this->privateExceptions[$th::class] ?? 0;
         if ($statusCode === 0) {
             return $th;
         }
 
-        $statusText = JsonResponse::$statusTexts[$statusCode] ?? JsonResponse::$statusTexts[JsonResponse::HTTP_INTERNAL_SERVER_ERROR];
+        $statusText = JsonResponse::$statusTexts[$statusCode];
 
         return new ShouldntReportException($statusText, $statusCode, $th);
     }
 
-    private function exceptionToJsonResource(Throwable $th): JsonResource
+    public function exceptionToJsonResource(Throwable $th): JsonResource
     {
         if ($th instanceof ValidationException) {
             return new UnprocessableContentResource($th->getMessage(), $th->errors());
@@ -120,7 +87,7 @@ final class ErrorHandler
         return new ErrorResource($th->getMessage());
     }
 
-    private function statusCodeByException(mixed $ex): int
+    public function getStatusCode(mixed $ex): int
     {
         $checkStatusCode = fn (int $code) => $code >= 100 && $code < 600;
 

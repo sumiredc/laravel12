@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\ErrorHandler;
+use App\Http\ExceptionHandler\Handler;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {})
     ->withExceptions(function (Exceptions $exceptions) {
-        $handler = app(ErrorHandler::class);
-        $handler->report($exceptions);
-        $handler->jsonResponse($exceptions);
+        $handler = new Handler($exceptions);
+        $handler->report()->createJsonResponse();
     })->create();
