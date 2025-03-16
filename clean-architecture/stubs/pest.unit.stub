@@ -1,5 +1,7 @@
 <?php
 
-test('example', function () {
-    expect(true)->toBeTrue();
+declare(strict_types=1);
+
+\describe('', function () {
+    \it('', function () {});
 });
