@@ -10,12 +10,12 @@ final class OAuthToken implements JsonSerializable
 {
     public function __construct(public readonly string $value) {}
 
-    final public function __toString(): string
+    public function __toString(): string
     {
         return $this->value;
     }
 
-    final public function jsonSerialize(): string
+    public function jsonSerialize(): string
     {
         return $this->value;
     }
