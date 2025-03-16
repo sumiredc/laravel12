@@ -13,7 +13,7 @@ declare(strict_types=1);
 |
 */
 
-pest()->extend(Tests\TestCase::class)
+\pest()->extend(Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
@@ -28,7 +28,7 @@ pest()->extend(Tests\TestCase::class)
 |
 */
 
-expect()->extend('toBeOne', function () {
+\expect()->extend('toBeOne', function () {
     return $this->toBe(1);
 });
 
@@ -47,3 +47,8 @@ function something()
 {
     // ..
 }
+
+\uses(
+    Tests\TestCase::class,
+)
+    ->in('Unit');
