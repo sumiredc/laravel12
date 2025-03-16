@@ -6,10 +6,11 @@ namespace App\Domain\ValueObjects;
 
 use App\Domain\Shared\Result;
 use InvalidArgumentException;
+use JsonSerializable;
 use Symfony\Component\Uid\Uuid as UidUuid;
 use Throwable;
 
-abstract class Uuid
+abstract class Uuid implements JsonSerializable
 {
     private function __construct(public readonly string $value) {}
 
@@ -23,7 +24,6 @@ abstract class Uuid
         } catch (Throwable $th) {
             return Result::err($th);
         }
-
     }
 
     final public function __toString(): string
