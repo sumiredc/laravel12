@@ -44,6 +44,9 @@ jobs:
       - name: Wait for MySQL to be ready
         run: sleep 10
 
+      - name: Generage passport keys
+        run: ./vendor/bin/sail artisan passport:keys
+
       - name: Run migrations
         run: ./vendor/bin/sail artisan migrate --seed | ./vendor/bin/sail artisan migrate:rollback
 
