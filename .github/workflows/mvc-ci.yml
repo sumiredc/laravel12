@@ -41,6 +41,9 @@ jobs:
       - name: Start Sail Containers
         run: ./vendor/bin/sail up -d
 
+      - name: Wait for MySQL to be ready
+        run: sleep 10
+
       - name: Run migrations
         run: ./vendor/bin/sail artisan migrate --seed |
           echo "Laravel Personal Access Client" |
