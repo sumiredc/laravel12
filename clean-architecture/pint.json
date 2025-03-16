@@ -18,6 +18,11 @@
             "import_functions": true
         },
         "mb_str_functions": true,
+        "native_function_invocation": {
+            "include": ["@all"],
+            "scope": "all",
+            "strict": true
+        },
         "not_operator_with_successor_space": false,
         "nullable_type_declaration": {
             "syntax": "question_mark"
