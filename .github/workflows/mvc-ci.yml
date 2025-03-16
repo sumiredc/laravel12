@@ -47,4 +47,4 @@ jobs:
           ./vendor/bin/sail artisan migrate:rollback
 
       - name: Run tests
-        run: ./vendor/bin/sail test
+        run: ./vendor/bin/sail test -p --coverage
