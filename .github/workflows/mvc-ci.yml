@@ -41,8 +41,8 @@ jobs:
       - name: Start Sail Containers
         run: ./vendor/bin/sail up -d
 
-      - name: Wait for MySQL to be ready
-        run: sleep 10
+      - name: Laravel pint
+        run: ./vendor/bin/sail pint --test -v
 
       - name: Generage passport keys
         run: ./vendor/bin/sail artisan passport:keys
