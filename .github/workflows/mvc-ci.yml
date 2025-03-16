@@ -48,7 +48,7 @@ jobs:
         run: ./vendor/bin/sail artisan passport:keys
 
       - name: Run migrations
-        run: ./vendor/bin/sail artisan migrate --seed | ./vendor/bin/sail artisan migrate:rollback
+        run: ./vendor/bin/sail artisan migrate:fresh --seed && ./vendor/bin/sail artisan migrate:rollback
 
       - name: Run tests
         run: ./vendor/bin/sail test -p --coverage
