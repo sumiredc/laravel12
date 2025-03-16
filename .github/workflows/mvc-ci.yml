@@ -45,10 +45,7 @@ jobs:
         run: sleep 10
 
       - name: Run migrations
-        run: ./vendor/bin/sail artisan migrate --seed |
-          echo "Laravel Personal Access Client" |
-          sh ./setpassport.sh |
-          ./vendor/bin/sail artisan migrate:rollback
+        run: ./vendor/bin/sail artisan migrate --seed | ./vendor/bin/sail artisan migrate:rollback
 
       - name: Run tests
         run: ./vendor/bin/sail test -p --coverage
