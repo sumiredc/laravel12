@@ -40,6 +40,12 @@ use Illuminate\Database\Eloquent\Model;
         \expect($result)->toBe($ulid);
     });
 
+    \it('allows null', function () {
+        $result = $this->cast->set($this->model, 'key', null, []);
+
+        \expect($result)->toBeNull();
+    });
+
     \it('throws InvalidArgumentException when conversion fails', function () {
         $this->cast->set($this->model, 'key', 'fbb43faf-268f-4d6f-b8d3-e0efe76d96da', []);
     })

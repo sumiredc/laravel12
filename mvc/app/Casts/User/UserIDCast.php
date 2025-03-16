@@ -9,6 +9,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
+use function is_null;
 use function strval;
 
 final class UserIDCast implements CastsAttributes
@@ -24,10 +25,14 @@ final class UserIDCast implements CastsAttributes
     /**
      * @param array<string, mixed> $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
         if ($value instanceof UserID) {
             return $value->value;
+        }
+
+        if (is_null($value)) {
+            return $value;
         }
 
         throw new InvalidArgumentException;
