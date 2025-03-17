@@ -8,6 +8,10 @@ use App\Domain\Consts\RoleID;
 use App\Http\Requests\AbstractRequest;
 use App\Rules\Common\PositiveNaturalNumberRule;
 
+use function app;
+use function intval;
+use function is_null;
+
 final class UserListRequest extends AbstractRequest
 {
     public function authorize(): bool
@@ -27,8 +31,8 @@ final class UserListRequest extends AbstractRequest
     public function rules(): array
     {
         return [
-            'offset' => ['nullable', app(PositiveNaturalNumberRule::class)],
-            'limit' => ['nullable', app(PositiveNaturalNumberRule::class), 'max:100'],
+            'offset' => ['nullable', 'integer', app(PositiveNaturalNumberRule::class)],
+            'limit' => ['nullable', 'integer', 'max:100', app(PositiveNaturalNumberRule::class)],
             'name' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'string', 'max:50'],
         ];
