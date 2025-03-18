@@ -16,7 +16,7 @@ final class ErrorResponse extends JsonResponse
         }
 
         parent::__construct([
-            'message' => self::$statusTexts[$status],
+            'message' => self::$statusTexts[$status] ?? 'An unknown error has occurred',
         ], $status, $headers);
     }
 }
