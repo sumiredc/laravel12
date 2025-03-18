@@ -17,6 +17,8 @@ use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use InvalidArgumentException;
 
+use function is_null;
+
 abstract class AbstractRequest extends FormRequest
 {
     /** @return Result<AuthUser,UnauthorizedException> */
@@ -29,6 +31,7 @@ abstract class AbstractRequest extends FormRequest
 
             return Result::err($err);
         }
+
         $user = $this->userModelToDomain($auth);
 
         return Result::ok($user);
@@ -55,13 +58,20 @@ abstract class AbstractRequest extends FormRequest
             throw $result->getError();
         }
 
-        $userID = $result->getValue();
+        $userID = UserID::parse($user->id)->getValue();
         $roleID = RoleID::from($user->role_id);
 
         /** @var OAuthAccessToken $tokenModel */
         $tokenModel = $user->token();
         $tokenID = OAuthTokenID::parse($tokenModel->id);
-        $clientID = OAuthClientID::parse($tokenModel->client_id)->getValue();
+        $result = OAuthClientID::parse($tokenModel->client_id);
+
+        // NOTE: NO ERROR - Refer to FW for value
+        if ($result->isErr()) {
+            throw $result->getError();
+        }
+
+        $clientID = $result->getValue();
         $personalAccessToken = new OAuthPersonalAccessToken($tokenID, $clientID);
 
         $auth = new AuthUser(
