@@ -21,7 +21,7 @@ interface UserRepositoryInterface
     /** @return Result<User,InternalServerErrorException> */
     public function create(User $user, Password $password): Result;
 
-    /** @return Result<?User,InternalServerErrorException|NotFoundException> */
+    /** @return Result<?User,InternalServerErrorException> */
     public function get(UserID $userID): Result;
 
     /** @return Result<bool,InternalServerErrorException> */

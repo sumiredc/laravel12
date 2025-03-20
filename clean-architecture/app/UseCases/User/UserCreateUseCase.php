@@ -55,6 +55,11 @@ final class UserCreateUseCase
         }
 
         $result = $this->mailRepository->sendInitialPassword($user, $password);
+        if ($result->isErr()) {
+            DB::rollBack();
+
+            return Result::err($result->getError());
+        }
 
         $output = new UserCreateOutput($user);
 

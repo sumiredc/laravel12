@@ -9,13 +9,15 @@ use App\Domain\Shared\Result;
 use App\Exceptions\InternalServerErrorException;
 use App\Exceptions\NotFoundException;
 
+use function is_null;
+
 final class UserGetUseCase
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository
     ) {}
 
-    /** @return Result<UserUpdateOutput,NotFoundException|InternalServerErrorException> */
+    /** @return Result<UserGetOutput,NotFoundException|InternalServerErrorException> */
     public function __invoke(UserGetInput $input): Result
     {
         $result = $this->userRepository->get($input->userID);
@@ -28,7 +30,7 @@ final class UserGetUseCase
             return Result::err(new NotFoundException);
         }
 
-        $output = new UserUpdateOutput($user);
+        $output = new UserGetOutput($user);
 
         return Result::ok($output);
     }

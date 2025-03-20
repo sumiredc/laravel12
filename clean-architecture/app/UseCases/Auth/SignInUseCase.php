@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Hash;
 final class SignInUseCase
 {
     public function __construct(
+        private readonly UserRepositoryInterface $userRepository,
         private readonly TokenRepositoryInterface $tokenRepository,
-        private readonly UserRepositoryInterface $userRepository
     ) {}
 
     /** @return Result<SignInOutPut,InvalidCredentialException,InternalServerErrorException> */
